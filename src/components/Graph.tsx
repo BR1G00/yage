@@ -1,6 +1,7 @@
 import {
   Background,
   Controls,
+  MarkerType,
   MiniMap,
   Position,
   ReactFlow,
@@ -15,36 +16,65 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useState } from "react";
+import { ChoiceNode, PageNode } from "./index";
 
 const nodeDefaults = {
   sourcePosition: Position.Right,
   targetPosition: Position.Left,
 };
 
+const nodeTypes = {
+  page: PageNode,
+  choice: ChoiceNode,
+};
+
 const initialNodes: Node[] = [
   {
     id: "n1",
-    position: { x: 0, y: 0 },
-    data: { label: "Node 1" },
-    type: "input",
+    position: { x: 0, y: 600 },
+    data: { title: "Page 1", content: "This is the content of page 1" },
+    type: "page",
     ...nodeDefaults,
   },
   {
     id: "n2",
-    position: { x: 0, y: 100 },
-    data: { label: "Node 2" },
-    type: "default",
+    position: { x: 400, y: 400 },
+    data: { title: "Choice 1", content: "This is the content of choice 1" },
+    type: "choice",
     ...nodeDefaults,
   },
   {
     id: "n3",
-    position: { x: 0, y: 200 },
-    data: { label: "Node 3" },
-    type: "output",
+    position: { x: 400, y: 800 },
+    data: { title: "Choice 2", content: "This is the content of choice 2" },
+    type: "choice",
+    ...nodeDefaults,
+  },
+  {
+    id: "n4",
+    position: { x: 800, y: 400 },
+    data: { title: "Page 2", content: "This is the content of page 2" },
+    type: "page",
+    ...nodeDefaults,
+  },
+  {
+    id: "n5",
+    position: { x: 800, y: 800 },
+    data: { title: "Page 3", content: "This is the content of page 3" },
+    type: "page",
     ...nodeDefaults,
   },
 ];
-const initialEdges: Edge[] = [{ id: "n1-n2", source: "n1", target: "n2" }];
+const initialEdges: Edge[] = [
+  {
+    id: "n1-n2",
+    source: "n1",
+    target: "n2",
+    markerEnd: {
+      type: MarkerType.Arrow,
+    },
+  },
+];
 
 export const Graph = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
@@ -57,7 +87,12 @@ export const Graph = () => {
     setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot));
   }, []);
   const onConnect = useCallback((params: Connection) => {
-    setEdges((edgesSnapshot) => addEdge(params, edgesSnapshot));
+    setEdges((edgesSnapshot) =>
+      addEdge(
+        { ...params, markerEnd: { type: MarkerType.Arrow } },
+        edgesSnapshot
+      )
+    );
   }, []);
 
   return (
@@ -69,6 +104,7 @@ export const Graph = () => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView
+        nodeTypes={nodeTypes}
       >
         <Background />
         <Controls />
