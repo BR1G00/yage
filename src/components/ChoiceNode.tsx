@@ -1,6 +1,7 @@
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
 import { type Choice } from "../models";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import CustomHandle from "./CustomHandle";
 
 type ChoiceNode = Node<Choice, "choice">;
 
@@ -12,8 +13,12 @@ export const ChoiceNode = ({ data }: NodeProps<ChoiceNode>) => {
       </CardHeader>
       <CardContent>
         <p>{data.content}</p>
-        <Handle type="source" position={Position.Right} />
-        <Handle type="target" position={Position.Left} />
+        <CustomHandle
+          type="source"
+          position={Position.Right}
+          connectionCount={1}
+        />
+        <CustomHandle type="target" position={Position.Left} />
       </CardContent>
     </Card>
   );

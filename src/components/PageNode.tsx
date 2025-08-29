@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import CustomHandle from "./CustomHandle";
 
 type PageNode = Node<Page, "page">;
 const pageHeaders: Record<
@@ -31,10 +32,10 @@ export const PageNode = ({ data }: NodeProps<PageNode>) => {
       <CardContent>
         <p>{data.content}</p>
         {(data.type === "start" || data.type === "normal") && (
-          <Handle type="source" position={Position.Right} />
+          <CustomHandle type="source" position={Position.Right} />
         )}
         {(data.type === "end" || data.type === "normal") && (
-          <Handle type="target" position={Position.Left} />
+          <CustomHandle type="target" position={Position.Left} />
         )}
       </CardContent>
     </Card>
