@@ -99,6 +99,12 @@ export const Graph = () => {
   const [nodes, setNodes] = useState<Node[]>(initialNodes);
   const [edges, setEdges] = useState<Edge[]>(initialEdges);
 
+  const isValidConnection = (connection: Connection | Edge) => {
+    const sourceNode = nodes.find((node) => node.id === connection.source);
+    const targetNode = nodes.find((node) => node.id === connection.target);
+    return sourceNode?.type !== targetNode?.type;
+  };
+
   const onNodesChange = useCallback((changes: NodeChange[]) => {
     setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot));
   }, []);
@@ -124,6 +130,7 @@ export const Graph = () => {
         onConnect={onConnect}
         fitView
         nodeTypes={nodeTypes}
+        isValidConnection={isValidConnection}
       >
         <Background />
         <Controls />

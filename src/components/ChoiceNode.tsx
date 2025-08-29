@@ -6,7 +6,7 @@ type ChoiceNode = Node<Choice, "choice">;
 
 export const ChoiceNode = ({ data }: NodeProps<ChoiceNode>) => {
   return (
-    <Card>
+    <Card className="bg-blue-100">
       <CardHeader>
         <CardTitle>{data.title}</CardTitle>
       </CardHeader>
