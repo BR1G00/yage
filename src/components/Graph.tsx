@@ -3,6 +3,7 @@ import {
   Controls,
   MarkerType,
   MiniMap,
+  Panel,
   Position,
   ReactFlow,
   addEdge,
@@ -17,87 +18,19 @@ import {
 import "@xyflow/react/dist/style.css";
 import { useCallback, useState } from "react";
 import { ChoiceNode, PageNode } from "./index";
-
-const nodeDefaults = {
-  sourcePosition: Position.Right,
-  targetPosition: Position.Left,
-};
+import ToolBar from "./ToolBar";
+import useGamebookStore from "@/store";
 
 const nodeTypes = {
   page: PageNode,
   choice: ChoiceNode,
 };
 
-const initialNodes: Node[] = [
-  {
-    id: "n1",
-    position: { x: 0, y: 600 },
-    data: {
-      type: "start",
-      title: "Page 1",
-      content: "Starting Page!!!!!",
-    },
-    type: "page",
-    ...nodeDefaults,
-  },
-  {
-    id: "n2",
-    position: { x: 400, y: 400 },
-    data: {
-      title: "Choice 1",
-      content: "This is the content of choice 1",
-    },
-    type: "choice",
-    ...nodeDefaults,
-  },
-  {
-    id: "n3",
-    position: { x: 400, y: 800 },
-    data: { title: "Choice 2", content: "This is the content of choice 2" },
-    type: "choice",
-    ...nodeDefaults,
-  },
-  {
-    id: "n4",
-    position: { x: 800, y: 400 },
-    data: { type: "end", title: "Page 2", content: "Game Over" },
-    type: "page",
-    ...nodeDefaults,
-  },
-  {
-    id: "n5",
-    position: { x: 800, y: 800 },
-    data: {
-      type: "normal",
-      title: "Page 3",
-      content: "This is the content of page 3",
-    },
-    type: "page",
-    ...nodeDefaults,
-  },
-];
-const initialEdges: Edge[] = [
-  {
-    id: "n1-n2",
-    source: "n1",
-    target: "n2",
-    markerEnd: {
-      type: MarkerType.Arrow,
-    },
-  },
-  {
-    id: "n2-n4",
-    source: "n2",
-    target: "n4",
-    markerEnd: {
-      type: MarkerType.Arrow,
-    },
-  },
-];
-
 export const Graph = () => {
-  const [nodes, setNodes] = useState<Node[]>(initialNodes);
-  const [edges, setEdges] = useState<Edge[]>(initialEdges);
+  const nodes = useGamebookStore((state) => state.nodes);
+  const edges = useGamebookStore((state) => state.edges);
+  const setNodes = useGamebookStore((state) => state.setNodes);
+  const setEdges = useGamebookStore((state) => state.setEdges);
 
   const isValidConnection = (connection: Connection | Edge) => {
     const sourceNode = nodes.find((node) => node.id === connection.source);
@@ -105,20 +38,26 @@ export const Graph = () => {
     return sourceNode?.type !== targetNode?.type;
   };
 
-  const onNodesChange = useCallback((changes: NodeChange[]) => {
-    setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot));
-  }, []);
-  const onEdgesChange = useCallback((changes: EdgeChange[]) => {
-    setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot));
-  }, []);
-  const onConnect = useCallback((params: Connection) => {
-    setEdges((edgesSnapshot) =>
-      addEdge(
-        { ...params, markerEnd: { type: MarkerType.Arrow } },
-        edgesSnapshot
-      )
-    );
-  }, []);
+  const onNodesChange = useCallback(
+    (changes: NodeChange[]) => {
+      setNodes(applyNodeChanges(changes, nodes));
+    },
+    [nodes, setNodes]
+  );
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange[]) => {
+      setEdges(applyEdgeChanges(changes, edges));
+    },
+    [edges, setEdges]
+  );
+  const onConnect = useCallback(
+    (params: Connection) => {
+      setEdges(
+        addEdge({ ...params, markerEnd: { type: MarkerType.Arrow } }, edges)
+      );
+    },
+    [edges, setEdges]
+  );
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>
@@ -135,6 +74,9 @@ export const Graph = () => {
         <Background />
         <Controls />
         <MiniMap />
+        <Panel position="top-left" className="w-screen bg-red-500 !m-0">
+          <ToolBar />
+        </Panel>
       </ReactFlow>
     </div>
   );
