@@ -1,19 +1,41 @@
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
-import { type Page } from "../models";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { type Page, type PageType } from "../models";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
 type PageNode = Node<Page, "page">;
-
+const pageHeaders: Record<
+  PageType,
+  { description: string; color: string } | null
+> = {
+  start: { description: "Start Page", color: "green" },
+  end: { description: "End Page", color: "red" },
+  normal: null,
+};
 export const PageNode = ({ data }: NodeProps<PageNode>) => {
   return (
     <Card>
       <CardHeader>
         <CardTitle>{data.title}</CardTitle>
+        {pageHeaders[data.type]?.description && (
+          <CardDescription style={{ color: pageHeaders[data.type]?.color }}>
+            {pageHeaders[data.type]?.description}
+          </CardDescription>
+        )}
       </CardHeader>
       <CardContent>
         <p>{data.content}</p>
-        <Handle type="source" position={Position.Right} />
-        <Handle type="target" position={Position.Left} />
+        {(data.type === "start" || data.type === "normal") && (
+          <Handle type="source" position={Position.Right} />
+        )}
+        {(data.type === "end" || data.type === "normal") && (
+          <Handle type="target" position={Position.Left} />
+        )}
       </CardContent>
     </Card>
   );
