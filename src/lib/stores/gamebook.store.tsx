@@ -1,5 +1,6 @@
 import { MarkerType, Position, type Edge, type Node } from "@xyflow/react";
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 
 interface GamebookStore {
   nodes: Node[];
@@ -82,37 +83,45 @@ const initialEdges: Edge[] = [
   },
 ];
 
-const useGamebookStore = create<GamebookStore>((set) => ({
-  nodes: initialNodes,
-  edges: initialEdges,
-  setNodes: (nodes: Node[]) => set({ nodes }),
-  setEdges: (edges: Edge[]) => set({ edges }),
-  addPageNode: () =>
-    set((state) => ({
-      nodes: [
-        ...state.nodes,
-        {
-          id: crypto.randomUUID(),
-          type: "page",
-          position: { x: 0, y: 0 },
-          data: { type: "normal", title: "Nuova Pagina", content: "" },
-          ...nodeDefaults,
-        },
-      ],
-    })),
-  addChoiceNode: () =>
-    set((state) => ({
-      nodes: [
-        ...state.nodes,
-        {
-          id: crypto.randomUUID(),
-          type: "choice",
-          position: { x: 0, y: 0 },
-          data: { title: "Nuova Scelta", content: "" },
-          ...nodeDefaults,
-        },
-      ],
-    })),
-}));
+const useGamebookStore = create<GamebookStore>()(
+  persist(
+    (set) => ({
+      nodes: initialNodes,
+      edges: initialEdges,
+      setNodes: (nodes: Node[]) => set({ nodes }),
+      setEdges: (edges: Edge[]) => set({ edges }),
+      addPageNode: () =>
+        set((state) => ({
+          nodes: [
+            ...state.nodes,
+            {
+              id: crypto.randomUUID(),
+              type: "page",
+              position: { x: 0, y: 0 },
+              data: { type: "normal", title: "Nuova Pagina", content: "" },
+              ...nodeDefaults,
+            },
+          ],
+        })),
+      addChoiceNode: () =>
+        set((state) => ({
+          nodes: [
+            ...state.nodes,
+            {
+              id: crypto.randomUUID(),
+              type: "choice",
+              position: { x: 0, y: 0 },
+              data: { title: "Nuova Scelta", content: "" },
+              ...nodeDefaults,
+            },
+          ],
+        })),
+    }),
+    {
+      name: "gamebook-store",
+      storage: createJSONStorage(() => sessionStorage),
+    }
+  )
+);
 
 export default useGamebookStore;
