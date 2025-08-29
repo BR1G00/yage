@@ -20,7 +20,7 @@ const pageHeaders: Record<
 };
 export const PageNode = ({ data }: NodeProps<PageNode>) => {
   return (
-    <Card>
+    <Card className="min-w-80 min-h-60">
       <CardHeader>
         <CardTitle>{data.title}</CardTitle>
         {pageHeaders[data.type]?.description && (
