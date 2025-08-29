@@ -4,7 +4,6 @@ import {
   MarkerType,
   MiniMap,
   Panel,
-  Position,
   ReactFlow,
   addEdge,
   applyEdgeChanges,
@@ -12,14 +11,13 @@ import {
   type Connection,
   type Edge,
   type EdgeChange,
-  type Node,
   type NodeChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { ChoiceNode, PageNode } from "./index";
 import ToolBar from "./ToolBar";
-import useGamebookStore from "@/store";
+import useGamebookStore from "@/lib/stores/gamebook.store";
 
 const nodeTypes = {
   page: PageNode,

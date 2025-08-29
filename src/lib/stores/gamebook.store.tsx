@@ -6,6 +6,8 @@ interface GamebookStore {
   edges: Edge[];
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
+  addPageNode: () => void;
+  addChoiceNode: () => void;
 }
 const nodeDefaults = {
   sourcePosition: Position.Right,
@@ -85,6 +87,32 @@ const useGamebookStore = create<GamebookStore>((set) => ({
   edges: initialEdges,
   setNodes: (nodes: Node[]) => set({ nodes }),
   setEdges: (edges: Edge[]) => set({ edges }),
+  addPageNode: () =>
+    set((state) => ({
+      nodes: [
+        ...state.nodes,
+        {
+          id: crypto.randomUUID(),
+          type: "page",
+          position: { x: 0, y: 0 },
+          data: { type: "normal", title: "Nuova Pagina", content: "" },
+          ...nodeDefaults,
+        },
+      ],
+    })),
+  addChoiceNode: () =>
+    set((state) => ({
+      nodes: [
+        ...state.nodes,
+        {
+          id: crypto.randomUUID(),
+          type: "choice",
+          position: { x: 0, y: 0 },
+          data: { title: "Nuova Scelta", content: "" },
+          ...nodeDefaults,
+        },
+      ],
+    })),
 }));
 
 export default useGamebookStore;
