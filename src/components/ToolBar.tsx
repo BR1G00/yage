@@ -1,4 +1,4 @@
-import { CircleDot, StickyNote } from "lucide-react";
+import { GitBranch, StickyNote } from "lucide-react";
 import { Button } from "./ui/button";
 import useGamebookStore from "@/lib/stores/gamebook.store";
 
@@ -14,12 +14,12 @@ const ToolBar = () => {
   };
 
   return (
-    <div className="flex bg-gray-100 p-2">
+    <div className="flex bg-gray-100 p-2 gap-2">
       <Button variant="outline" size="sm" onClick={handleNewPage}>
         <StickyNote /> New Page
       </Button>
       <Button variant="outline" size="sm" onClick={handleNewChoice}>
-        <CircleDot /> New Choice
+        <GitBranch /> New Choice
       </Button>
     </div>
   );

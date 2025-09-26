@@ -18,10 +18,15 @@ import { useCallback } from "react";
 import { ChoiceNode, PageNode } from "./index";
 import ToolBar from "./ToolBar";
 import useGamebookStore from "@/lib/stores/gamebook.store";
+import CustomEdge from "./CustomEdge";
 
 const nodeTypes = {
   page: PageNode,
   choice: ChoiceNode,
+};
+
+const edgeTypes = {
+  default: CustomEdge,
 };
 
 export const Graph = () => {
@@ -68,6 +73,7 @@ export const Graph = () => {
         onConnect={onConnect}
         fitView
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         isValidConnection={isValidConnection}
       >
         <Background />
