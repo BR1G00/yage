@@ -1,13 +1,17 @@
-import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
+import { Position, type Node, type NodeProps } from "@xyflow/react";
 import { type Choice } from "../models";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import CustomHandle from "./CustomHandle";
 
 type ChoiceNode = Node<Choice, "choice">;
 
-export const ChoiceNode = ({ data }: NodeProps<ChoiceNode>) => {
+export const ChoiceNode = ({ data, selected }: NodeProps<ChoiceNode>) => {
   return (
-    <Card className="bg-blue-100 min-w-60 min-h-40">
+    <Card
+      className={`bg-blue-100 min-w-60 min-h-40 ${
+        selected ? "border-blue-500" : "border-gray-300"
+      }`}
+    >
       <CardHeader>
         <CardTitle>{data.title}</CardTitle>
       </CardHeader>

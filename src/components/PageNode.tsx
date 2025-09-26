@@ -18,9 +18,13 @@ const pageHeaders: Record<
   end: { description: "End Page", color: "red" },
   normal: null,
 };
-export const PageNode = ({ data }: NodeProps<PageNode>) => {
+export const PageNode = ({ data, selected }: NodeProps<PageNode>) => {
   return (
-    <Card className="min-w-80 min-h-60">
+    <Card
+      className={`min-w-80 min-h-60 ${
+        selected ? "border-blue-500" : "border-gray-300"
+      }`}
+    >
       <CardHeader>
         <CardTitle>{data.title}</CardTitle>
         {pageHeaders[data.type]?.description && (
