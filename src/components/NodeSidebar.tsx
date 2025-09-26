@@ -10,32 +10,33 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
-
-const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  calendars: [
-    {
-      name: "My Calendars",
-      items: ["Personal", "Work", "Family"],
-    },
-    {
-      name: "Favorites",
-      items: ["Holidays", "Birthdays"],
-    },
-    {
-      name: "Other",
-      items: ["Travel", "Reminders", "Deadlines"],
-    },
-  ],
-};
+import useGamebookStore from "@/lib/stores/gamebook.store";
+import { useMemo } from "react";
+import type { PageNode } from "./page/PageNode";
+import type { ChoiceNode } from "./choice/ChoiceNode";
+import type { Choice, Page } from "@/models";
+import { PageForm } from "./page/PageForm";
+import { ChoiceForm } from "./choice/ChoiceForm";
 
 export function NodeSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const nodes = useGamebookStore((state) => state.nodes);
+  const selectedNode: PageNode | ChoiceNode | undefined = useMemo(
+    () =>
+      nodes.find((node) => node.selected) as PageNode | ChoiceNode | undefined,
+    [nodes]
+  );
+  const selectedNodeContent = useMemo(() => {
+    if (selectedNode?.type === "page") {
+      return <PageForm page={selectedNode.data} />;
+    }
+    if (selectedNode?.type === "choice") {
+      return <ChoiceForm choice={selectedNode.data} />;
+    }
+    return <div>No node selected</div>;
+  }, [selectedNode]);
+
   return (
     <Sidebar
       collapsible="none"
@@ -43,9 +44,7 @@ export function NodeSidebar({
       {...props}
     >
       <SidebarHeader className="border-sidebar-border h-16 border-b"></SidebarHeader>
-      <SidebarContent>
-        <SidebarSeparator className="mx-0" />
-      </SidebarContent>
+      <SidebarContent>{selectedNodeContent}</SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem></SidebarMenuItem>

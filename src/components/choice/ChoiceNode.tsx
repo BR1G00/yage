@@ -1,9 +1,9 @@
 import { Position, type Node, type NodeProps } from "@xyflow/react";
-import { type Choice } from "../models";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import CustomHandle from "./CustomHandle";
+import { type Choice } from "../../models";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import CustomHandle from "../CustomHandle";
 
-type ChoiceNode = Node<Choice, "choice">;
+export type ChoiceNode = Node<Choice, "choice">;
 
 export const ChoiceNode = ({ data, selected }: NodeProps<ChoiceNode>) => {
   return (

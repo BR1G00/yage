@@ -1,15 +1,15 @@
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
-import { type Page, type PageType } from "../models";
+import { type Page, type PageType } from "../../models";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import CustomHandle from "./CustomHandle";
+} from "../ui/card";
+import CustomHandle from "../CustomHandle";
 
-type PageNode = Node<Page, "page">;
+export type PageNode = Node<Page, "page">;
 const pageHeaders: Record<
   PageType,
   { description: string; color: string } | null

@@ -12,8 +12,6 @@ import {
   type Edge,
   type EdgeChange,
   type NodeChange,
-  type Node as ReactFlowNode,
-  type OnSelectionChangeParams,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback } from "react";
@@ -37,14 +35,6 @@ export const Graph = () => {
     const targetNode = nodes.find((node) => node.id === connection.target);
     return sourceNode?.type !== targetNode?.type;
   };
-
-  const onSelectionChange = useCallback(
-    (params: OnSelectionChangeParams<ReactFlowNode, Edge>) => {
-      console.log("Selected nodes:", params.nodes);
-      console.log("Selected edges:", params.edges);
-    },
-    []
-  );
 
   const onNodesChange = useCallback(
     (changes: NodeChange[]) => {
@@ -74,7 +64,6 @@ export const Graph = () => {
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
-        onSelectionChange={onSelectionChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         fitView

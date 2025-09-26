@@ -1,6 +1,6 @@
 import "./App.css";
 import { Graph } from "./components/Graph";
-import { NodeSidebar } from "./components/nodeSidebar";
+import { NodeSidebar } from "./components/NodeSidebar";
 import { SidebarProvider } from "./components/ui/sidebar";
 
 function App() {
