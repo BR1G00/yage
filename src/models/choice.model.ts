@@ -1,4 +1,4 @@
 export type Choice = {
-    title: string;
-    content: string;
+  title: string;
+  content: string;
 };
