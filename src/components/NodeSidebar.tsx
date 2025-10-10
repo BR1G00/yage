@@ -28,7 +28,15 @@ export function NodeSidebar({
   const handleSubmit = (data: Choice | Partial<Page>) => {
     setNodes(
       nodes.map((node) =>
-        node.id === selectedNode?.id ? { ...node, data } : node
+        node.id === selectedNode?.id
+          ? {
+              ...node,
+              data: {
+                ...node.data,
+                ...data,
+              },
+            }
+          : node
       )
     );
   };
