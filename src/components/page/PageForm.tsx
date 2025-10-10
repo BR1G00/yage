@@ -1,15 +1,9 @@
 import type { Page } from "@/models";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
+import { Form } from "../ui/form";
 import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+
+import { NodeFormFields } from "../NodeFormFields";
 
 export const PageForm = ({
   page,
@@ -25,39 +19,13 @@ export const PageForm = ({
     },
   });
 
-  const handleSubmit = (data: Partial<Page>) => {
-    onSubmit({ ...data });
-  };
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Title</FormLabel>
-              <FormControl>
-                <Input placeholder="Title" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="content"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Content</FormLabel>
-              <FormControl>
-                <Input placeholder="Content" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Save</Button>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-6">
+        <NodeFormFields<Partial<Page>> form={form} />
+        <Button type="submit" className="w-full">
+          Save
+        </Button>
       </form>
     </Form>
   );

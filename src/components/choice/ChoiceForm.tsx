@@ -1,15 +1,8 @@
 import type { Choice } from "@/models";
 import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+import { Form } from "../ui/form";
 import { Button } from "../ui/button";
+import { NodeFormFields } from "../NodeFormFields";
 
 export const ChoiceForm = ({
   choice,
@@ -24,10 +17,6 @@ export const ChoiceForm = ({
       content: choice.content,
     },
   });
-
-  const handleSubmit = (data: Choice) => {
-    onSubmit(data);
-  };
 
   return (
     <Form {...form}>
