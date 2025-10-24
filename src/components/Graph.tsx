@@ -15,7 +15,7 @@ import {
   type NodeChange,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import CustomEdge from "./CustomEdge";
 import { ChoiceNode, PageNode } from "./index";
 import ToolBar from "./ToolBar";
@@ -47,12 +47,14 @@ export const Graph = () => {
     },
     [nodes, setNodes]
   );
+
   const onEdgesChange = useCallback(
     (changes: EdgeChange[]) => {
       setEdges(applyEdgeChanges(changes, edges));
     },
     [edges, setEdges]
   );
+
   const onConnect = useCallback(
     (params: Connection) => {
       setEdges(
@@ -61,26 +63,6 @@ export const Graph = () => {
     },
     [edges, setEdges]
   );
-
-  const handleSave = useCallback(() => {
-    const blob = new Blob([JSON.stringify({ nodes, edges })], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "gamebook.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [nodes, edges]);
-
-  useEffect(() => {
-    const cleanup = window?.electronAPI?.onSave(() => {
-      handleSave();
-    });
-
-    return cleanup;
-  }, [handleSave]);
 
   return (
     <div style={{ width: "100vw", height: "100vh" }}>

@@ -1,4 +1,5 @@
-import { app, BrowserWindow, Menu } from "electron";
+import { app, BrowserWindow, dialog, Menu } from "electron";
+import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -23,8 +24,22 @@ const createWindow = () => {
       submenu: [
         {
           label: "Open",
-          click: () => {
-            console.log("open");
+          click: async () => {
+            const result = await dialog.showOpenDialog({
+              properties: ["openFile"],
+              filters: [{ name: "JSON Files", extensions: ["json"] }],
+            });
+
+            if (result.canceled) return;
+
+            try {
+              const file = result.filePaths[0];
+              const fileContent = fs.readFileSync(file, "utf8");
+              const data = JSON.parse(fileContent);
+              win.webContents.send("open", data);
+            } catch (error) {
+              console.error("Error reading file", error);
+            }
           },
         },
         {

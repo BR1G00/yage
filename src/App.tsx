@@ -7,8 +7,11 @@ import {
   ResizablePanelGroup,
 } from "./components/ui/resizable";
 import { SidebarProvider } from "./components/ui/sidebar";
+import { useGraphManager } from "./hooks/use-graph-manager";
 
 function App() {
+  useGraphManager();
+
   return (
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel defaultSize={75} minSize={30} maxSize={80}>

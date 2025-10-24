@@ -1,18 +1,18 @@
 // components/NodeSidebar.tsx
-import * as React from "react";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import useGamebookStore from "@/lib/stores/gamebook.store";
-import { useMemo } from "react";
-import type { PageNode } from "./page/PageNode";
-import type { ChoiceNode } from "./choice/ChoiceNode";
-import { PageForm } from "./page/PageForm";
-import { ChoiceForm } from "./choice/ChoiceForm";
 import type { Choice, Page } from "@/models";
 import { FileText, GitBranch } from "lucide-react";
+import * as React from "react";
+import { useCallback, useMemo } from "react";
+import { ChoiceForm } from "./choice/ChoiceForm";
+import type { ChoiceNode } from "./choice/ChoiceNode";
+import { PageForm } from "./page/PageForm";
+import type { PageNode } from "./page/PageNode";
 
 export function NodeSidebar({
   ...props
@@ -25,21 +25,24 @@ export function NodeSidebar({
     [nodes]
   );
 
-  const handleSubmit = (data: Choice | Partial<Page>) => {
-    setNodes(
-      nodes.map((node) =>
-        node.id === selectedNode?.id
-          ? {
-              ...node,
-              data: {
-                ...node.data,
-                ...data,
-              },
-            }
-          : node
-      )
-    );
-  };
+  const handleSubmit = useCallback(
+    (data: Choice | Partial<Page>) => {
+      setNodes(
+        nodes.map((node) =>
+          node.id === selectedNode?.id
+            ? {
+                ...node,
+                data: {
+                  ...node.data,
+                  ...data,
+                },
+              }
+            : node
+        )
+      );
+    },
+    [nodes, selectedNode, setNodes]
+  );
 
   const selectedNodeContent = useMemo(() => {
     if (selectedNode?.type === "page") {
@@ -59,7 +62,7 @@ export function NodeSidebar({
         </p>
       </div>
     );
-  }, [selectedNode]);
+  }, [selectedNode, handleSubmit]);
 
   const nodeTypeConfig = {
     page: { icon: FileText, label: "Page Node", color: "text-blue-500" },
