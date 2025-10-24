@@ -65,26 +65,24 @@ export const Graph = () => {
   );
 
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <ReactFlow
-        multiSelectionKeyCode={null}
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        isValidConnection={isValidConnection}
-      >
-        <Background />
-        <Controls />
-        <MiniMap />
-        <Panel position="top-left" className="w-screen !m-0">
-          <ToolBar />
-        </Panel>
-      </ReactFlow>
-    </div>
+    <ReactFlow
+      multiSelectionKeyCode={null}
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+      fitView
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
+      isValidConnection={isValidConnection}
+    >
+      <Background />
+      <Controls />
+      <MiniMap />
+      <Panel position="top-left" className="w-screen !m-0">
+        <ToolBar />
+      </Panel>
+    </ReactFlow>
   );
 };

@@ -1,4 +1,4 @@
-import { MarkerType, Position, type Edge, type Node } from "@xyflow/react";
+import { Position, type Edge, type Node } from "@xyflow/react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 

@@ -1,10 +1,15 @@
 import {
+  NodeResizer,
   Position,
   useReactFlow,
   type Node,
   type NodeProps,
 } from "@xyflow/react";
+import { useState } from "react";
 import { type Page, type PageType } from "../../models";
+import { ConfirmDeleteDialog } from "../ConfirmDeleteDialog";
+import CustomHandle from "../CustomHandle";
+import ToolTipBar from "../ToolTipBar";
 import {
   Card,
   CardContent,
@@ -12,10 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import CustomHandle from "../CustomHandle";
-import ToolTipBar from "../ToolTipBar";
-import { useState } from "react";
-import { ConfirmDeleteDialog } from "../ConfirmDeleteDialog";
 
 export type PageNode = Node<Page, "page">;
 const pageHeaders: Record<
@@ -42,6 +43,7 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
 
   return (
     <>
+      <NodeResizer isVisible={selected} minWidth={240} minHeight={160} />
       <ConfirmDeleteDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
@@ -57,7 +59,7 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
         onDelete={handleDelete}
       />
       <Card
-        className={`min-w-80 min-h-60 ${
+        className={`min-w-60 min-h-40 w-full h-full ${
           selected ? "border-blue-500" : "border-gray-300"
         }`}
       >

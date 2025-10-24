@@ -3,22 +3,25 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import useGamebookStore from "@/lib/stores/gamebook.store";
 import type { Choice, Page } from "@/models";
-import { FileText, GitBranch } from "lucide-react";
+import { FileText, GitBranch, XIcon } from "lucide-react";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { ChoiceForm } from "./choice/ChoiceForm";
 import type { ChoiceNode } from "./choice/ChoiceNode";
 import { PageForm } from "./page/PageForm";
 import type { PageNode } from "./page/PageNode";
+import { Button } from "./ui/button";
 
 export function NodeSidebar({
   ...props
-}: React.ComponentProps<typeof Sidebar>) {
+}: React.ComponentProps<typeof Sidebar> & {}) {
   const nodes = useGamebookStore((state) => state.nodes);
   const setNodes = useGamebookStore((state) => state.setNodes);
+  const { setOpen } = useSidebar();
   const selectedNode: PageNode | ChoiceNode | undefined = useMemo(
     () =>
       nodes.find((node) => node.selected) as PageNode | ChoiceNode | undefined,
@@ -45,24 +48,22 @@ export function NodeSidebar({
   );
 
   const selectedNodeContent = useMemo(() => {
-    if (selectedNode?.type === "page") {
-      return <PageForm page={selectedNode.data} onSubmit={handleSubmit} />;
+    if (selectedNode) {
+      setOpen(true);
+
+      if (selectedNode.type === "page") {
+        return <PageForm page={selectedNode.data} onSubmit={handleSubmit} />;
+      }
+
+      if (selectedNode.type === "choice") {
+        return (
+          <ChoiceForm choice={selectedNode.data} onSubmit={handleSubmit} />
+        );
+      }
+    } else {
+      setOpen(false);
     }
-    if (selectedNode?.type === "choice") {
-      return <ChoiceForm choice={selectedNode.data} onSubmit={handleSubmit} />;
-    }
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
-          <FileText className="w-8 h-8" />
-        </div>
-        <h3 className="font-semibold text-lg mb-2">No Node Selected</h3>
-        <p className="text-sm">
-          Select a node from the graph to edit its properties
-        </p>
-      </div>
-    );
-  }, [selectedNode, handleSubmit]);
+  }, [selectedNode, handleSubmit, setOpen]);
 
   const nodeTypeConfig = {
     page: { icon: FileText, label: "Page Node", color: "text-blue-500" },
@@ -73,13 +74,9 @@ export function NodeSidebar({
   const Icon = config?.icon;
 
   return (
-    <Sidebar
-      collapsible="none"
-      className="sticky top-0 hidden h-svh border-l lg:flex w-full"
-      {...props}
-    >
+    <Sidebar className={`border-l `} {...props}>
       {selectedNode && config && Icon && (
-        <SidebarHeader className="border-b p-4">
+        <SidebarHeader className="border-b p-4 flex flex-row justify-between items-center">
           <div className="flex items-center gap-3">
             <div className={`${config.color}`}>
               <Icon className="w-5 h-5" />
@@ -91,6 +88,15 @@ export function NodeSidebar({
               </p>
             </div>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => {
+              setNodes(nodes.map((node) => ({ ...node, selected: false })));
+            }}
+          >
+            <XIcon className="w-4 h-4" />
+          </Button>
         </SidebarHeader>
       )}
       <SidebarContent className="p-0">{selectedNodeContent}</SidebarContent>

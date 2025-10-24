@@ -1,15 +1,16 @@
 import {
+  NodeResizer,
   Position,
+  useReactFlow,
   type Node,
   type NodeProps,
-  useReactFlow,
 } from "@xyflow/react";
+import { useState } from "react";
 import { type Choice } from "../../models";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { ConfirmDeleteDialog } from "../ConfirmDeleteDialog";
 import CustomHandle from "../CustomHandle";
 import ToolTipBar from "../ToolTipBar";
-import { useState } from "react";
-import { ConfirmDeleteDialog } from "../ConfirmDeleteDialog";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 export type ChoiceNode = Node<Choice, "choice">;
 
@@ -29,6 +30,7 @@ export const ChoiceNode = ({ data, selected, id }: NodeProps<ChoiceNode>) => {
 
   return (
     <>
+      <NodeResizer isVisible={selected} minWidth={240} minHeight={160} />
       <ConfirmDeleteDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
@@ -44,14 +46,14 @@ export const ChoiceNode = ({ data, selected, id }: NodeProps<ChoiceNode>) => {
         onDelete={handleDelete}
       />
       <Card
-        className={`bg-blue-100 min-w-60 min-h-40 ${
+        className={`bg-blue-100 min-w-60 min-h-40 w-full h-full ${
           selected ? "border-blue-500" : "border-gray-300"
         }`}
       >
         <CardHeader>
           <CardTitle>{data.title}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="overflow-hidden">
           <p>{data.content}</p>
           <CustomHandle
             type="source"
