@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -12,8 +12,33 @@ const createWindow = () => {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
+      preload: path.join(__dirname, "preload.js"),
     },
   });
+
+  const template = [
+    ...(process.platform === "darwin" ? [{ role: "appMenu" }] : []),
+    {
+      role: "fileMenu",
+      submenu: [
+        {
+          label: "Open",
+          click: () => {
+            console.log("open");
+          },
+        },
+        {
+          label: "Save",
+          click: () => {
+            win.webContents.send("save");
+          },
+        },
+      ],
+    },
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
 
   if (isDev) {
     // In development, load from Vite dev server
