@@ -51,7 +51,7 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
       />
       <ToolTipBar
         data={{
-          toolbarVisible: selected,
+          toolbarVisible: selected && data.type !== "start",
           toolbarPosition: Position.Top,
         }}
         onDelete={handleDelete}
