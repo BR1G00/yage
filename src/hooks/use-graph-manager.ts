@@ -75,7 +75,7 @@ export const useGraphManager = () => {
     });
 
     const cleanupSuccess = window?.electronAPI?.onSaveSuccess?.(() => {
-      toast.success("Gamebook saved");
+      toast.success("Saved");
     });
 
     const cleanupError = window?.electronAPI?.onSaveError?.((error) => {
