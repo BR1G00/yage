@@ -48,6 +48,12 @@ const createWindow = () => {
             win.webContents.send("save");
           },
         },
+        {
+          label: "Save as",
+          click: () => {
+            win.webContents.send("save_as");
+          },
+        },
       ],
     },
   ];

@@ -18,7 +18,7 @@ export const useGraphManager = () => {
     [setNodes, setEdges]
   );
 
-  const handleSave = useCallback(() => {
+  const handleSaveAs = useCallback(() => {
     const blob = new Blob([JSON.stringify({ nodes, edges })], {
       type: "application/json",
     });
@@ -44,9 +44,9 @@ export const useGraphManager = () => {
   }, [handleOpen]);
 
   useEffect(() => {
-    const cleanup = window?.electronAPI?.onSave(() => {
+    const cleanup = window?.electronAPI?.onSaveAs(() => {
       try {
-        handleSave();
+        handleSaveAs();
       } catch (error) {
         toast.error("Failed to save file");
         console.error("Failed to save file", error);
@@ -54,5 +54,5 @@ export const useGraphManager = () => {
     });
 
     return cleanup;
-  }, [handleSave]);
+  }, [handleSaveAs]);
 };
