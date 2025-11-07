@@ -29,8 +29,8 @@ const pageHeaders: Record<
 };
 export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
   const { deleteElements } = useReactFlow();
-
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleDelete = () => {
     setShowDeleteDialog(true);
@@ -59,7 +59,7 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
         onDelete={handleDelete}
       />
       <Card
-        className={`min-w-60 min-h-40 w-full h-full ${
+        className={`min-w-60 min-h-40 w-full h-full flex flex-col ${
           selected ? "border-blue-500" : "border-gray-300"
         }`}
       >
@@ -71,8 +71,26 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
             </CardDescription>
           )}
         </CardHeader>
-        <CardContent>
-          <p>{data.content}</p>
+        <CardContent className="flex-1 flex flex-col gap-3 p-4 overflow-hidden">
+          {data.content && (
+            <div className="flex-1 overflow-y-auto min-h-0">
+              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap break-words">
+                {data.content}
+              </p>
+            </div>
+          )}
+
+          {data.image && !imageError && (
+            <div className="relative w-full h-56 bg-gray-100 rounded-sm overflow-hidden  mt-2">
+              <img
+                src={data.image}
+                alt={data.title}
+                className="w-full h-full object-cover"
+                onError={() => setImageError(true)}
+              />
+            </div>
+          )}
+
           {(data.type === "start" || data.type === "normal") && (
             <CustomHandle type="source" position={Position.Right} />
           )}

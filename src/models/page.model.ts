@@ -3,4 +3,5 @@ export type Page = {
   title: string;
   content: string;
   type: PageType;
+  image: string;
 };
