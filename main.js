@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, Menu } from "electron";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -70,6 +70,21 @@ const createWindow = () => {
             win.webContents.send("save");
           },
         },
+        ...(isDev
+          ? [
+              {
+                label: "Dev Mode",
+                submenu: [
+                  {
+                    label: "Open Dev Tools",
+                    click: () => {
+                      win.webContents.openDevTools();
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
         {
           label: "Save as",
           click: () => {
