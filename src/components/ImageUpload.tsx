@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Upload, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -17,6 +17,10 @@ export const ImageUpload = ({
 }: ImageUploadProps) => {
   const [preview, setPreview] = useState<string | undefined>(value);
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    setPreview(value);
+  }, [value]);
 
   const handleFile = async (file: File) => {
     if (file && file.type.startsWith("image/")) {
