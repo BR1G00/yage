@@ -32,7 +32,12 @@ export const useGraphManager = () => {
 
   useEffect(() => {
     const cleanup = window?.electronAPI?.onOpen((data) => {
-      handleOpen(data);
+      try {
+        handleOpen(data);
+      } catch (error) {
+        toast.error("Failed to open file");
+        console.error("Failed to open file", error);
+      }
     });
 
     return cleanup;
