@@ -19,8 +19,11 @@ export const useGraphManager = () => {
   );
 
   const handleSave = useCallback(() => {
-    toast.success("Gamebook saved");
-  }, []);
+    // Path hardcoded per il salvataggio
+    const savePath = "temp/gamebook-1.json";
+    // Invia i dati e il path al main process per salvare
+    window?.electronAPI?.saveToPath?.(savePath, { nodes, edges });
+  }, [nodes, edges]);
 
   const handleSaveAs = useCallback(() => {
     const blob = new Blob([JSON.stringify({ nodes, edges })], {
@@ -57,7 +60,20 @@ export const useGraphManager = () => {
       }
     });
 
-    return cleanup;
+    const cleanupSuccess = window?.electronAPI?.onSaveSuccess?.(() => {
+      toast.success("Gamebook saved");
+    });
+
+    const cleanupError = window?.electronAPI?.onSaveError?.((error) => {
+      toast.error(`Failed to save file: ${error}`);
+      console.error("Failed to save file", error);
+    });
+
+    return () => {
+      cleanup?.();
+      cleanupSuccess?.();
+      cleanupError?.();
+    };
   }, [handleSave]);
 
   useEffect(() => {
