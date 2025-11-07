@@ -45,6 +45,12 @@ const createWindow = () => {
       role: "fileMenu",
       submenu: [
         {
+          label: "New",
+          click: () => {
+            win.webContents.send("new");
+          },
+        },
+        {
           label: "Open",
           click: async () => {
             const result = await dialog.showOpenDialog({
@@ -70,6 +76,12 @@ const createWindow = () => {
             win.webContents.send("save");
           },
         },
+        {
+          label: "Save as",
+          click: () => {
+            win.webContents.send("save_as");
+          },
+        },
         ...(isDev
           ? [
               {
@@ -85,12 +97,6 @@ const createWindow = () => {
               },
             ]
           : []),
-        {
-          label: "Save as",
-          click: () => {
-            win.webContents.send("save_as");
-          },
-        },
       ],
     },
   ];

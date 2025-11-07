@@ -29,4 +29,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
   saveToPath: (filePath, data) => {
     ipcRenderer.send("save-to-path", filePath, data);
   },
+  onNew: (callback) => {
+    const handler = () => callback();
+    ipcRenderer.on("new", handler);
+    return () => ipcRenderer.removeListener("new", handler);
+  },
 });

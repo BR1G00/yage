@@ -11,6 +11,7 @@ declare global {
         callback: (error: string) => void
       ) => (() => void) | undefined;
       saveToPath: (filePath: string, data: string) => void;
+      onNew: (callback: () => void) => (() => void) | undefined;
     };
   }
 }

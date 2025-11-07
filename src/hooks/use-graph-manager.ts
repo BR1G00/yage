@@ -9,6 +9,7 @@ export const useGraphManager = () => {
   const currentFilePath = useGamebookStore((state) => state.currentFilePath);
   const setNodes = useGamebookStore((state) => state.setNodes);
   const setEdges = useGamebookStore((state) => state.setEdges);
+  const reset = useGamebookStore((state) => state.reset);
   const setCurrentFilePath = useGamebookStore(
     (state) => state.setCurrentFilePath
   );
@@ -102,4 +103,11 @@ export const useGraphManager = () => {
 
     return cleanup;
   }, [handleSaveAs]);
+
+  useEffect(() => {
+    const cleanup = window?.electronAPI?.onNew(() => {
+      reset();
+    });
+    return cleanup;
+  }, [reset]);
 };
