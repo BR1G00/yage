@@ -5,6 +5,7 @@ declare global {
     electronAPI?: {
       onOpen: (callback: (data: unknown) => void) => (() => void) | undefined;
       onSaveAs: (callback: () => void) => (() => void) | undefined;
+      onSave: (callback: () => void) => (() => void) | undefined;
     };
   }
 }
