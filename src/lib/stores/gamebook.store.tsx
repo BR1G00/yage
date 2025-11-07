@@ -5,8 +5,10 @@ import { createJSONStorage, persist } from "zustand/middleware";
 interface GamebookStore {
   nodes: Node[];
   edges: Edge[];
+  currentFilePath: string | null;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
+  setCurrentFilePath: (path: string | null) => void;
   addPageNode: () => void;
   addChoiceNode: () => void;
 }
@@ -36,8 +38,10 @@ const useGamebookStore = create<GamebookStore>()(
     (set) => ({
       nodes: initialNodes,
       edges: initialEdges,
+      currentFilePath: null,
       setNodes: (nodes: Node[]) => set({ nodes }),
       setEdges: (edges: Edge[]) => set({ edges }),
+      setCurrentFilePath: (path: string | null) => set({ currentFilePath: path }),
       addPageNode: () =>
         set((state) => ({
           nodes: [
