@@ -1,7 +1,9 @@
 import useGamebookStore from "@/lib/stores/gamebook.store";
 import type { Choice, Page } from "@/models";
 import type { Node } from "@xyflow/react";
+import { ArrowLeft } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Button } from "./ui/button";
 
 export const PlayStory = () => {
   const nodes = useGamebookStore((state) => state.nodes);
@@ -22,9 +24,12 @@ export const PlayStory = () => {
     return { pages: p, choices: c };
   }, [nodes]);
 
-  const [currentPageId, setCurrentPageId] = useState(
-    pages?.find((node) => node.data.type === "start")?.id
-  );
+  const [pageHistory, setPageHistory] = useState<string[]>(() => {
+    const startPageId = pages?.find((node) => node.data.type === "start")?.id;
+    return startPageId ? [startPageId] : [];
+  });
+
+  const currentPageId = pageHistory[pageHistory.length - 1];
 
   const currentPage = useMemo(() => {
     return pages.find((node) => node.id === currentPageId);
@@ -50,6 +55,19 @@ export const PlayStory = () => {
     return map;
   }, [currentChoices, edges]);
 
+  const handleChoiceClick = (choiceId: string) => {
+    const nextPageId = choiceDestinations.get(choiceId);
+    if (nextPageId) {
+      setPageHistory((prev) => [...prev, nextPageId]);
+    }
+  };
+
+  const handleBack = () => {
+    if (pageHistory.length > 1) {
+      setPageHistory((prev) => prev.slice(0, -1));
+    }
+  };
+
   return (
     <div className=" flex flex-col gap-4 p-4">
       <h2 className="text-2xl font-bold">{currentPage?.data.title}</h2>
@@ -70,7 +88,7 @@ export const PlayStory = () => {
           <div
             key={choice.id}
             className="border border-gray-300 cursor-pointer hover:bg-gray-100 p-2 rounded-md"
-            onClick={() => setCurrentPageId(choiceDestinations.get(choice.id))}
+            onClick={() => handleChoiceClick(choice.id)}
           >
             <p className="text-sm font-medium">{choice.data.title}</p>
             <p className="text-xs text-muted-foreground">
@@ -79,6 +97,12 @@ export const PlayStory = () => {
           </div>
         ))}
       </div>
+
+      {pageHistory.length > 1 && (
+        <Button variant="outline" size="sm" onClick={handleBack}>
+          <ArrowLeft /> Back
+        </Button>
+      )}
     </div>
   );
 };
