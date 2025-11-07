@@ -37,11 +37,15 @@ export const useGraphManager = () => {
         return cleanup;
     }, [handleOpen]);
 
-    useEffect(() => {
-        const cleanup = window?.electronAPI?.onSave(() => {
-            handleSave();
-        });
+  useEffect(() => {
+    const cleanup = window?.electronAPI?.onSave(() => {
+      try {
+        handleSave();
+      } catch (error) {
+        window.alert("Errore durante il salvataggio del file");
+      }
+    });
 
-        return cleanup;
-    }, [handleSave]);
-}
+    return cleanup;
+  }, [handleSave]);
+};
