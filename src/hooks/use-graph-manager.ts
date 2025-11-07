@@ -6,24 +6,34 @@ import { toast } from "sonner";
 export const useGraphManager = () => {
   const nodes = useGamebookStore((state) => state.nodes);
   const edges = useGamebookStore((state) => state.edges);
+  const currentFilePath = useGamebookStore((state) => state.currentFilePath);
   const setNodes = useGamebookStore((state) => state.setNodes);
   const setEdges = useGamebookStore((state) => state.setEdges);
+  const setCurrentFilePath = useGamebookStore(
+    (state) => state.setCurrentFilePath
+  );
 
   const handleOpen = useCallback(
     (data: unknown) => {
-      const { nodes, edges } = data as { nodes: Node[]; edges: Edge[] };
+      const { nodes, edges, filePath } = data as {
+        nodes: Node[];
+        edges: Edge[];
+        filePath: string;
+      };
       setNodes(nodes);
       setEdges(edges);
+      setCurrentFilePath(filePath);
     },
-    [setNodes, setEdges]
+    [setNodes, setEdges, setCurrentFilePath]
   );
 
   const handleSave = useCallback(() => {
-    // Path hardcoded per il salvataggio
-    const savePath = "temp/gamebook-1.json";
-    // Invia i dati e il path al main process per salvare
-    window?.electronAPI?.saveToPath?.(savePath, { nodes, edges });
-  }, [nodes, edges]);
+    if (!currentFilePath) {
+      handleSaveAs();
+      return;
+    }
+    window?.electronAPI?.saveToPath?.(currentFilePath, { nodes, edges });
+  }, [nodes, edges, currentFilePath]);
 
   const handleSaveAs = useCallback(() => {
     const blob = new Blob([JSON.stringify({ nodes, edges })], {

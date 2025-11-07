@@ -58,7 +58,7 @@ const createWindow = () => {
               const file = result.filePaths[0];
               const fileContent = fs.readFileSync(file, "utf8");
               const data = JSON.parse(fileContent);
-              win.webContents.send("open", data);
+              win.webContents.send("open", { ...data, filePath: file });
             } catch (error) {
               console.error("Error reading file", error);
             }
