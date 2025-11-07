@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, Menu } from "electron";
+import { app, BrowserWindow, dialog, Menu, ipcMain } from "electron";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -15,6 +15,28 @@ const createWindow = () => {
       contextIsolation: true,
       preload: path.join(__dirname, "preload.js"),
     },
+  });
+
+  // Handler per salvare nel path passato come parametro
+  ipcMain.on("save-to-path", (_event, filePath, data) => {
+    try {
+      // Risolvi il path relativo rispetto alla directory dell'app
+      const savePath = path.isAbsolute(filePath)
+        ? filePath
+        : path.join(__dirname, filePath);
+
+      // Assicurati che la directory esista
+      const dir = path.dirname(savePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      // Salva il file
+      fs.writeFileSync(savePath, data);
+      win.webContents.send("save-success");
+    } catch (error) {
+      console.error("Error saving file", error);
+      win.webContents.send("save-error", error.message);
+    }
   });
 
   const template = [
@@ -36,7 +58,7 @@ const createWindow = () => {
               const file = result.filePaths[0];
               const fileContent = fs.readFileSync(file, "utf8");
               const data = JSON.parse(fileContent);
-              win.webContents.send("open", data);
+              win.webContents.send("open", { ...data, filePath: file });
             } catch (error) {
               console.error("Error reading file", error);
             }
@@ -46,6 +68,12 @@ const createWindow = () => {
           label: "Save",
           click: () => {
             win.webContents.send("save");
+          },
+        },
+        {
+          label: "Save as",
+          click: () => {
+            win.webContents.send("save_as");
           },
         },
       ],
