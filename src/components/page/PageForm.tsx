@@ -7,7 +7,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useForm, type Path } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Button } from "../ui/button";
 
 import { Input } from "../ui/input";
@@ -19,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { ImageUpload } from "../ImageUpload";
 
 export const PageForm = ({
   page,
@@ -32,6 +33,7 @@ export const PageForm = ({
       title: page.title,
       content: page.content,
       type: page.type,
+      image: page.image,
     },
   });
 
@@ -91,6 +93,23 @@ export const PageForm = ({
                     )}
                   </SelectContent>
                 </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name={"image"}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Image</FormLabel>
+              <FormControl>
+                <ImageUpload
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={form.formState.isSubmitting}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
