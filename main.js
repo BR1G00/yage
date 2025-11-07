@@ -48,6 +48,21 @@ const createWindow = () => {
             win.webContents.send("save");
           },
         },
+        ...(isDev
+          ? [
+              {
+                label: "Dev Mode",
+                submenu: [
+                  {
+                    label: "Open Dev Tools",
+                    click: () => {
+                      win.webContents.openDevTools();
+                    },
+                  },
+                ],
+              },
+            ]
+          : []),
       ],
     },
   ];

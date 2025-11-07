@@ -1,10 +1,13 @@
-import { GitBranch, StickyNote } from "lucide-react";
-import { Button } from "./ui/button";
 import useGamebookStore from "@/lib/stores/gamebook.store";
+import { GitBranch, Play, StickyNote } from "lucide-react";
+import { PlayStory } from "./PlayStory";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
 const ToolBar = () => {
   const addPageNode = useGamebookStore((state) => state.addPageNode);
   const addChoiceNode = useGamebookStore((state) => state.addChoiceNode);
+
   const handleNewPage = () => {
     addPageNode();
   };
@@ -21,6 +24,17 @@ const ToolBar = () => {
       <Button variant="outline" size="sm" onClick={handleNewChoice}>
         <GitBranch /> New Choice
       </Button>
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline" size="sm">
+            <Play /> Play Story
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <PlayStory />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
