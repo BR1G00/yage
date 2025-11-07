@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Upload, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import imageCompression from "browser-image-compression";
 
 interface ImageUploadProps {
   value?: string;
@@ -17,15 +18,16 @@ export const ImageUpload = ({
   const [preview, setPreview] = useState<string | undefined>(value);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        setPreview(base64);
-        onChange(base64);
-      };
-      reader.readAsDataURL(file);
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 1,
+        maxWidthOrHeight: 1024,
+        useWebWorker: true,
+      });
+      const base64 = await imageCompression.getDataUrlFromFile(compressedFile);
+      setPreview(base64);
+      onChange(base64);
     }
   };
 
@@ -95,9 +97,7 @@ export const ImageUpload = ({
               <span className="font-semibold">Click to upload</span> or drag and
               drop
             </p>
-            <p className="text-xs text-muted-foreground">
-              PNG, JPG
-            </p>
+            <p className="text-xs text-muted-foreground">PNG, JPG</p>
           </div>
           <Input
             type="file"
