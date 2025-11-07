@@ -31,7 +31,7 @@ const createWindow = () => {
         fs.mkdirSync(dir, { recursive: true });
       }
       // Salva il file
-      fs.writeFileSync(savePath, JSON.stringify(data, null, 2));
+      fs.writeFileSync(savePath, data);
       win.webContents.send("save-success");
     } catch (error) {
       console.error("Error saving file", error);

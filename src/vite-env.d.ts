@@ -10,10 +10,7 @@ declare global {
       onSaveError: (
         callback: (error: string) => void
       ) => (() => void) | undefined;
-      saveToPath: (
-        filePath: string,
-        data: { nodes: unknown[]; edges: unknown[] }
-      ) => void;
+      saveToPath: (filePath: string, data: string) => void;
     };
   }
 }

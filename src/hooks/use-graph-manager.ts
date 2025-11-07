@@ -27,16 +27,20 @@ export const useGraphManager = () => {
     [setNodes, setEdges, setCurrentFilePath]
   );
 
+  function stringifyData() {
+    return JSON.stringify({ nodes, edges });
+  }
+
   const handleSave = useCallback(() => {
     if (!currentFilePath) {
       handleSaveAs();
       return;
     }
-    window?.electronAPI?.saveToPath?.(currentFilePath, { nodes, edges });
+    window?.electronAPI?.saveToPath?.(currentFilePath, stringifyData());
   }, [nodes, edges, currentFilePath]);
 
   const handleSaveAs = useCallback(() => {
-    const blob = new Blob([JSON.stringify({ nodes, edges })], {
+    const blob = new Blob([stringifyData()], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
