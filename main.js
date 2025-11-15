@@ -18,7 +18,7 @@ const createWindow = () => {
   });
 
   // Handler per salvare nel path passato come parametro
-  ipcMain.on("save-to-path", (_event, filePath, data) => {
+  ipcMain.handle("save-to-path", async (_event, filePath, data) => {
     try {
       // Risolvi il path relativo rispetto alla directory dell'app
       const savePath = path.isAbsolute(filePath)
@@ -32,12 +32,39 @@ const createWindow = () => {
       }
       // Salva il file
       fs.writeFileSync(savePath, data);
-      win.webContents.send("save-success");
+      return true;
     } catch (error) {
       console.error("Error saving file", error);
-      win.webContents.send("save-error", error.message);
+      return false;
     }
   });
+
+  async function handleOpenFile(win) {
+    const result = await dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [{ name: "JSON Files", extensions: ["json"] }],
+    });
+
+    if (result.canceled) return;
+
+    try {
+      const file = result.filePaths[0];
+      const fileContent = fs.readFileSync(file, "utf8");
+      const data = JSON.parse(fileContent);
+      win.webContents.send("open", { ...data, filePath: file });
+    } catch (error) {
+      console.error("Error reading file", error);
+    }
+  }
+
+  async function handleSaveAsFile(win) {
+    const result = await dialog.showSaveDialog({
+      filters: [{ name: "JSON Files", extensions: ["json"] }],
+    });
+    if (result.canceled) return;
+    const filePath = result.filePath;
+    win.webContents.send("save_as", filePath);
+  }
 
   const template = [
     ...(process.platform === "darwin" ? [{ role: "appMenu" }] : []),
@@ -52,34 +79,14 @@ const createWindow = () => {
         },
         {
           label: "Open",
-          click: async () => {
-            const result = await dialog.showOpenDialog({
-              properties: ["openFile"],
-              filters: [{ name: "JSON Files", extensions: ["json"] }],
-            });
-
-            if (result.canceled) return;
-
-            try {
-              const file = result.filePaths[0];
-              const fileContent = fs.readFileSync(file, "utf8");
-              const data = JSON.parse(fileContent);
-              win.webContents.send("open", { ...data, filePath: file });
-            } catch (error) {
-              console.error("Error reading file", error);
-            }
-          },
-        },
-        {
-          label: "Save",
           click: () => {
-            win.webContents.send("save");
+            handleOpenFile(win);
           },
         },
         {
           label: "Save as",
           click: () => {
-            win.webContents.send("save_as");
+            handleSaveAsFile(win);
           },
         },
         ...(isDev

@@ -32,26 +32,24 @@ export const useGraphManager = () => {
     return JSON.stringify({ nodes, edges });
   }
 
-  const handleSave = useCallback(() => {
-    if (!currentFilePath) {
-      handleSaveAs();
-      return;
-    }
-    window?.electronAPI?.saveToPath?.(currentFilePath, stringifyData());
-  }, [nodes, edges, currentFilePath]);
+  const handleSaveAs = useCallback(
+    async (filePath: string) => {
+      const result = await window?.electronAPI?.saveToPath?.(
+        filePath,
+        stringifyData()
+      );
+      console.log("result:\t", result);
+      if (result) {
+        setCurrentFilePath(filePath);
+        toast.success("File saved");
+      } else {
+        toast.error("Failed to save file");
+      }
+    },
+    [nodes, edges, setCurrentFilePath]
+  );
 
-  const handleSaveAs = useCallback(() => {
-    const blob = new Blob([stringifyData()], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "gamebook.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [nodes, edges]);
-
+  //onOpen
   useEffect(() => {
     const cleanup = window?.electronAPI?.onOpen((data) => {
       try {
@@ -65,36 +63,11 @@ export const useGraphManager = () => {
     return cleanup;
   }, [handleOpen]);
 
+  //onSaveAs
   useEffect(() => {
-    const cleanup = window?.electronAPI?.onSave(() => {
+    const cleanup = window?.electronAPI?.onSaveAs(async (filePath) => {
       try {
-        handleSave();
-      } catch (error) {
-        toast.error("Failed to save file");
-        console.error("Failed to save file", error);
-      }
-    });
-
-    const cleanupSuccess = window?.electronAPI?.onSaveSuccess?.(() => {
-      toast.success("Saved");
-    });
-
-    const cleanupError = window?.electronAPI?.onSaveError?.((error) => {
-      toast.error(`Failed to save file: ${error}`);
-      console.error("Failed to save file", error);
-    });
-
-    return () => {
-      cleanup?.();
-      cleanupSuccess?.();
-      cleanupError?.();
-    };
-  }, [handleSave]);
-
-  useEffect(() => {
-    const cleanup = window?.electronAPI?.onSaveAs(() => {
-      try {
-        handleSaveAs();
+        await handleSaveAs(filePath);
       } catch (error) {
         toast.error("Failed to save file");
         console.error("Failed to save file", error);

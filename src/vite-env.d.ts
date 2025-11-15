@@ -4,13 +4,10 @@ declare global {
   interface Window {
     electronAPI?: {
       onOpen: (callback: (data: unknown) => void) => (() => void) | undefined;
-      onSaveAs: (callback: () => void) => (() => void) | undefined;
-      onSave: (callback: () => void) => (() => void) | undefined;
-      onSaveSuccess: (callback: () => void) => (() => void) | undefined;
-      onSaveError: (
-        callback: (error: string) => void
+      onSaveAs: (
+        callback: (filePath: string) => void
       ) => (() => void) | undefined;
-      saveToPath: (filePath: string, data: string) => void;
+      saveToPath: (filePath: string, data: string) => Promise<boolean>;
       onNew: (callback: () => void) => (() => void) | undefined;
     };
   }
