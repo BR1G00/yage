@@ -18,7 +18,7 @@ const createWindow = () => {
   });
 
   // Handler per salvare nel path passato come parametro
-  ipcMain.on("save-to-path", (_event, filePath, data) => {
+  ipcMain.handle("save-to-path", async (_event, filePath, data) => {
     try {
       // Risolvi il path relativo rispetto alla directory dell'app
       const savePath = path.isAbsolute(filePath)
@@ -32,12 +32,43 @@ const createWindow = () => {
       }
       // Salva il file
       fs.writeFileSync(savePath, data);
-      win.webContents.send("save-success");
+      return true;
     } catch (error) {
       console.error("Error saving file", error);
-      win.webContents.send("save-error", error.message);
+      return false;
     }
   });
+
+  async function handleOpenFile(win) {
+    const result = await dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [{ name: "JSON Files", extensions: ["json"] }],
+    });
+
+    if (result.canceled) return;
+
+    try {
+      const file = result.filePaths[0];
+      const fileContent = fs.readFileSync(file, "utf8");
+      const data = JSON.parse(fileContent);
+      win.webContents.send("open", { ...data, filePath: file });
+    } catch (error) {
+      console.error("Error reading file", error);
+    }
+  }
+
+  async function handleSaveAsFile(win) {
+    const result = await dialog.showSaveDialog({
+      filters: [{ name: "JSON Files", extensions: ["json"] }],
+    });
+    if (result.canceled) return;
+    const filePath = result.filePath;
+    win.webContents.send("save_as", filePath);
+  }
+
+  async function handleSaveFile(win) {
+    win.webContents.send("save");
+  }
 
   const template = [
     ...(process.platform === "darwin" ? [{ role: "appMenu" }] : []),
@@ -45,29 +76,29 @@ const createWindow = () => {
       role: "fileMenu",
       submenu: [
         {
-          label: "Open",
-          click: async () => {
-            const result = await dialog.showOpenDialog({
-              properties: ["openFile"],
-              filters: [{ name: "JSON Files", extensions: ["json"] }],
-            });
-
-            if (result.canceled) return;
-
-            try {
-              const file = result.filePaths[0];
-              const fileContent = fs.readFileSync(file, "utf8");
-              const data = JSON.parse(fileContent);
-              win.webContents.send("open", { ...data, filePath: file });
-            } catch (error) {
-              console.error("Error reading file", error);
-            }
+          label: "New",
+          click: () => {
+            win.webContents.send("new");
           },
         },
         {
-          label: "Save",
+          label: "Open",
           click: () => {
-            win.webContents.send("save");
+            handleOpenFile(win);
+          },
+        },
+        {
+          id: "save",
+          label: "Save",
+          enabled: false,
+          click: () => {
+            handleSaveFile(win);
+          },
+        },
+        {
+          label: "Save as",
+          click: () => {
+            handleSaveAsFile(win);
           },
         },
         ...(isDev
@@ -85,18 +116,25 @@ const createWindow = () => {
               },
             ]
           : []),
-        {
-          label: "Save as",
-          click: () => {
-            win.webContents.send("save_as");
-          },
-        },
       ],
     },
   ];
 
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
+
+  // Funzione per aggiornare lo stato del menu Save
+  function updateSaveMenuEnabled(enabled) {
+    const saveMenuItem = menu.getMenuItemById("save");
+    if (saveMenuItem) {
+      saveMenuItem.enabled = enabled;
+    }
+  }
+
+  // Handler per aggiornare lo stato del menu Save
+  ipcMain.on("update-save-menu", (_event, hasFilePath) => {
+    updateSaveMenuEnabled(hasFilePath);
+  });
 
   if (isDev) {
     // In development, load from Vite dev server

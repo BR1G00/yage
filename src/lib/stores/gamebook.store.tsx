@@ -11,6 +11,7 @@ interface GamebookStore {
   setCurrentFilePath: (path: string | null) => void;
   addPageNode: () => void;
   addChoiceNode: () => void;
+  reset: () => void;
 }
 const nodeDefaults = {
   sourcePosition: Position.Right,
@@ -41,7 +42,14 @@ const useGamebookStore = create<GamebookStore>()(
       currentFilePath: null,
       setNodes: (nodes: Node[]) => set({ nodes }),
       setEdges: (edges: Edge[]) => set({ edges }),
-      setCurrentFilePath: (path: string | null) => set({ currentFilePath: path }),
+      setCurrentFilePath: (path: string | null) =>
+        set({ currentFilePath: path }),
+      reset: () =>
+        set({
+          nodes: initialNodes,
+          edges: initialEdges,
+          currentFilePath: null,
+        }),
       addPageNode: () =>
         set((state) => ({
           nodes: [
