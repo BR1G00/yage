@@ -88,7 +88,9 @@ const createWindow = () => {
           },
         },
         {
+          id: "save",
           label: "Save",
+          enabled: false,
           click: () => {
             handleSaveFile(win);
           },
@@ -120,6 +122,19 @@ const createWindow = () => {
 
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
+
+  // Funzione per aggiornare lo stato del menu Save
+  function updateSaveMenuEnabled(enabled) {
+    const saveMenuItem = menu.getMenuItemById("save");
+    if (saveMenuItem) {
+      saveMenuItem.enabled = enabled;
+    }
+  }
+
+  // Handler per aggiornare lo stato del menu Save
+  ipcMain.on("update-save-menu", (_event, hasFilePath) => {
+    updateSaveMenuEnabled(hasFilePath);
+  });
 
   if (isDev) {
     // In development, load from Vite dev server

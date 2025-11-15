@@ -28,4 +28,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   saveToPath: (filePath, data) => {
     return ipcRenderer.invoke("save-to-path", filePath, data);
   },
+
+  updateSaveMenu: (hasFilePath) => {
+    ipcRenderer.send("update-save-menu", hasFilePath);
+  },
 });

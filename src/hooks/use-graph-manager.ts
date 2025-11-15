@@ -48,10 +48,6 @@ export const useGraphManager = () => {
     [nodes, edges, setCurrentFilePath]
   );
 
-  const handleSave = useCallback(async () => {
-    await window?.electronAPI?.saveToPath?.(currentFilePath!, stringifyData());
-  }, [currentFilePath, stringifyData]);
-
   //onOpen
   useEffect(() => {
     const cleanup = window?.electronAPI?.onOpen((data) => {
@@ -84,12 +80,13 @@ export const useGraphManager = () => {
   useEffect(() => {
     const cleanup = window?.electronAPI?.onSave(async () => {
       try {
-        await handleSave();
+        await handleSaveAs(currentFilePath!);
       } catch (error) {
         toast.error("Failed to save file");
         console.error("Failed to save file", error);
       }
     });
+    return cleanup;
   }, [handleSave]);
 
   //onNew
@@ -99,4 +96,9 @@ export const useGraphManager = () => {
     });
     return cleanup;
   }, [reset]);
+
+  // Aggiorna lo stato del menu Save quando currentFilePath cambia
+  useEffect(() => {
+    window?.electronAPI?.updateSaveMenu?.(currentFilePath !== null);
+  }, [currentFilePath]);
 };
