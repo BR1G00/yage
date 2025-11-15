@@ -18,6 +18,13 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("save_as", handler);
     return () => ipcRenderer.removeListener("save_as", handler);
   },
+
+  onSave: (callback) => {
+    const handler = (_event, filePath) => callback(filePath);
+    ipcRenderer.on("save", handler);
+    return () => ipcRenderer.removeListener("save", handler);
+  },
+
   saveToPath: (filePath, data) => {
     return ipcRenderer.invoke("save-to-path", filePath, data);
   },

@@ -7,6 +7,7 @@ declare global {
       onSaveAs: (
         callback: (filePath: string) => void
       ) => (() => void) | undefined;
+      onSave: (callback: () => void) => (() => void) | undefined;
       saveToPath: (filePath: string, data: string) => Promise<boolean>;
       onNew: (callback: () => void) => (() => void) | undefined;
     };

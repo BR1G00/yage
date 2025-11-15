@@ -66,6 +66,10 @@ const createWindow = () => {
     win.webContents.send("save_as", filePath);
   }
 
+  async function handleSaveFile(win) {
+    win.webContents.send("save");
+  }
+
   const template = [
     ...(process.platform === "darwin" ? [{ role: "appMenu" }] : []),
     {
@@ -81,6 +85,12 @@ const createWindow = () => {
           label: "Open",
           click: () => {
             handleOpenFile(win);
+          },
+        },
+        {
+          label: "Save",
+          click: () => {
+            handleSaveFile(win);
           },
         },
         {

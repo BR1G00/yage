@@ -38,7 +38,6 @@ export const useGraphManager = () => {
         filePath,
         stringifyData()
       );
-      console.log("result:\t", result);
       if (result) {
         setCurrentFilePath(filePath);
         toast.success("File saved");
@@ -48,6 +47,10 @@ export const useGraphManager = () => {
     },
     [nodes, edges, setCurrentFilePath]
   );
+
+  const handleSave = useCallback(async () => {
+    await window?.electronAPI?.saveToPath?.(currentFilePath!, stringifyData());
+  }, [currentFilePath, stringifyData]);
 
   //onOpen
   useEffect(() => {
@@ -77,6 +80,19 @@ export const useGraphManager = () => {
     return cleanup;
   }, [handleSaveAs]);
 
+  //onSave
+  useEffect(() => {
+    const cleanup = window?.electronAPI?.onSave(async () => {
+      try {
+        await handleSave();
+      } catch (error) {
+        toast.error("Failed to save file");
+        console.error("Failed to save file", error);
+      }
+    });
+  }, [handleSave]);
+
+  //onNew
   useEffect(() => {
     const cleanup = window?.electronAPI?.onNew(() => {
       reset();
