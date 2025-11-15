@@ -12,8 +12,8 @@ function App() {
 
   return (
     <SidebarProvider>
-      <p>{currentFilePath}</p>
       <SidebarInset>
+        <div className="text-sm text-gray-500">{currentFilePath}</div>
         <Graph />
       </SidebarInset>
       <NodeSidebar side="right" />

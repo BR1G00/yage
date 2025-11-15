@@ -87,7 +87,7 @@ export const useGraphManager = () => {
       }
     });
     return cleanup;
-  }, [handleSave]);
+  }, [handleSaveAs, currentFilePath]);
 
   //onNew
   useEffect(() => {
