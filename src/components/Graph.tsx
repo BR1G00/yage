@@ -66,6 +66,7 @@ export const Graph = () => {
 
   return (
     <ReactFlow
+      deleteKeyCode={null}
       multiSelectionKeyCode={null}
       nodes={nodes}
       edges={edges}
