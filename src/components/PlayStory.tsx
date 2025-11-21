@@ -1,10 +1,12 @@
 import useGamebookStore from "@/lib/stores/gamebook.store";
 import type { Choice, Page } from "@/models";
 import type { Node } from "@xyflow/react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, BookOpen, Flag, Home, Play } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Separator } from "./ui/separator";
 
 export const PlayStory = () => {
   const nodes = useGamebookStore((state) => state.nodes);
@@ -69,51 +71,147 @@ export const PlayStory = () => {
     }
   };
 
+  const handleRestart = () => {
+    const startPageId = pages?.find((node) => node.data.type === "start")?.id;
+    if (startPageId) {
+      setPageHistory([startPageId]);
+    }
+  };
+
+  const isEndPage = currentPage?.data.type === "end";
+  const isStartPage = currentPage?.data.type === "start";
+
   return (
-    <div className=" flex flex-col gap-4 p-4">
-      <div className="flex flex-row justify-between items-center gap-2">
-        <h2 className="text-2xl font-bold">{currentPage?.data.title}</h2>
+    <div className="flex flex-col h-full w-full overflow-hidden bg-white">
+      <div className="flex-shrink-0 flex items-center justify-between p-4 pr-14 border-b h-16">
+        <div className="flex items-center gap-3">
+          {isStartPage ? (
+            <Play className="w-4 h-4 text-green-600" />
+          ) : isEndPage ? (
+            <Flag className="w-4 h-4 text-orange-600" />
+          ) : (
+            <BookOpen className="w-4 h-4 text-gray-400" />
+          )}
 
-        {currentPage?.data.type === "start" && (
-          <Badge variant="default">Start</Badge>
-        )}
+          <h2 className="text-base font-semibold text-gray-900">
+            {currentPage?.data.title}
+          </h2>
 
-        {currentPage?.data.type === "end" && (
-          <Badge variant="destructive">End</Badge>
-        )}
-      </div>
-      <p className="text-sm text-muted-foreground">
-        {currentPage?.data.content}
-      </p>
-      {currentPage?.data.image && (
-        <div className="relative w-full h-56 bg-gray-100 rounded-sm overflow-hidden  mt-2">
-          <img
-            src={currentPage?.data.image || ""}
-            alt={currentPage?.data.title || ""}
-            className="w-full h-full object-cover"
-          />
+          {isStartPage && (
+            <Badge
+              variant="outline"
+              className="text-xs text-green-700 border-green-300"
+            >
+              Start
+            </Badge>
+          )}
+
+          {isEndPage && (
+            <Badge
+              variant="outline"
+              className="text-xs text-orange-600 border-orange-600"
+            >
+              End
+            </Badge>
+          )}
         </div>
-      )}
-      <div className="flex flex-col gap-2">
-        {currentChoices.map((choice) => (
-          <div
-            key={choice.id}
-            className="border border-gray-300 cursor-pointer hover:bg-gray-100 p-2 rounded-md"
-            onClick={() => handleChoiceClick(choice.id)}
-          >
-            <p className="text-sm font-medium">{choice.data.title}</p>
-            <p className="text-xs text-muted-foreground">
-              {choice.data.content}
-            </p>
-          </div>
-        ))}
+
+        <div className="flex gap-2">
+          {pageHistory.length > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBack}
+              className="gap-1"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Indietro
+            </Button>
+          )}
+
+          {!isStartPage && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleRestart}
+              className="gap-1"
+            >
+              <Home className="w-4 h-4" />
+              Ricomincia
+            </Button>
+          )}
+        </div>
       </div>
 
-      {pageHistory.length > 1 && (
-        <Button variant="outline" size="sm" onClick={handleBack}>
-          <ArrowLeft /> Back
-        </Button>
-      )}
+      <div className="flex-1 overflow-y-auto bg-gray-50">
+        <div className="p-6 space-y-6">
+          {currentPage?.data.image && (
+            <div className="relative w-full h-80 bg-gray-100 rounded-lg overflow-hidden">
+              <img
+                src={currentPage.data.image}
+                alt={currentPage.data.title || ""}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          {currentPage?.data.content && (
+            <Card className="p-6 bg-white border-gray-200">
+              <p className="text-base leading-relaxed text-gray-700 whitespace-pre-wrap">
+                {currentPage.data.content}
+              </p>
+            </Card>
+          )}
+
+          {currentChoices.length > 0 && (
+            <div className="space-y-3 pt-4">
+              <Separator />
+              <div className="grid gap-3">
+                {currentChoices.map((choice, index) => (
+                  <Card
+                    key={choice.id}
+                    className="cursor-pointer transition-all duration-200 hover:shadow-sm hover:border-gray-400 active:scale-[0.99] bg-white border-gray-300"
+                    onClick={() => handleChoiceClick(choice.id)}
+                  >
+                    <div className="p-4 flex items-start gap-3">
+                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center font-medium text-sm">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <p className="font-medium text-gray-900">
+                          {choice.data.title}
+                        </p>
+                        {choice.data.content && (
+                          <p className="text-sm text-gray-600">
+                            {choice.data.content}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {isEndPage && currentChoices.length === 0 && (
+            <div className="text-center space-y-4 py-8">
+              <Flag className="w-12 h-12 mx-auto text-orange-600" />
+              <p className="text-lg font-medium text-gray-900">
+                Fine della storia
+              </p>
+              <Button
+                onClick={handleRestart}
+                variant="outline"
+                className="gap-2"
+              >
+                <Home className="w-4 h-4" />
+                Ricomincia
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };
