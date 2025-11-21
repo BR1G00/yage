@@ -18,7 +18,7 @@ import {
   type OnConnectEnd,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import CustomEdge from "./CustomEdge";
 import { ChoiceNode, PageNode } from "./index";
 import ToolBar from "./ToolBar";
@@ -39,6 +39,8 @@ const GraphInner = () => {
   const setEdges = useGamebookStore((state) => state.setEdges);
   const addPageNode = useGamebookStore((state) => state.addPageNode);
   const addChoiceNode = useGamebookStore((state) => state.addChoiceNode);
+  const addMode = useGamebookStore((state) => state.addMode);
+  const setAddMode = useGamebookStore((state) => state.setAddMode);
   const { screenToFlowPosition } = useReactFlow();
 
   const isValidConnection = (connection: Connection | Edge) => {
@@ -104,6 +106,56 @@ const GraphInner = () => {
     [addPageNode, screenToFlowPosition, addChoiceNode, edges, setEdges]
   );
 
+  const resetCursor = useCallback(() => {
+    const reactFlowWrapper = document.querySelector(
+      ".react-flow__pane"
+    ) as HTMLElement;
+    if (reactFlowWrapper) {
+      reactFlowWrapper.style.removeProperty("cursor");
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && addMode) {
+        setAddMode(null);
+        resetCursor();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [addMode, setAddMode, resetCursor]);
+
+  const handlePaneClick = useCallback(
+    (event: React.MouseEvent) => {
+      try {
+        if (addMode === "page") {
+          addPageNode({
+            id: crypto.randomUUID(),
+            position: screenToFlowPosition({
+              x: event.clientX,
+              y: event.clientY,
+            }),
+          });
+        } else if (addMode === "choice") {
+          addChoiceNode({
+            id: crypto.randomUUID(),
+            position: screenToFlowPosition({
+              x: event.clientX,
+              y: event.clientY,
+            }),
+          });
+        }
+      } catch (error) {
+        console.error("Error adding node", error);
+      } finally {
+        resetCursor();
+      }
+    },
+    [addMode, addPageNode, addChoiceNode, screenToFlowPosition, resetCursor]
+  );
+
   return (
     <ReactFlow
       deleteKeyCode={null}
@@ -114,6 +166,7 @@ const GraphInner = () => {
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
       onConnectEnd={onConnectEnd}
+      onPaneClick={handlePaneClick}
       fitView
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
