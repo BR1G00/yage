@@ -52,12 +52,22 @@ export function NodeSidebar({
       setOpen(true);
 
       if (selectedNode.type === "page") {
-        return <PageForm page={selectedNode.data} onSubmit={handleSubmit} />;
+        return (
+          <PageForm
+            key={selectedNode.id}
+            page={selectedNode.data}
+            onSubmit={handleSubmit}
+          />
+        );
       }
 
       if (selectedNode.type === "choice") {
         return (
-          <ChoiceForm choice={selectedNode.data} onSubmit={handleSubmit} />
+          <ChoiceForm
+            key={selectedNode.id}
+            choice={selectedNode.data}
+            onSubmit={handleSubmit}
+          />
         );
       }
     } else {
