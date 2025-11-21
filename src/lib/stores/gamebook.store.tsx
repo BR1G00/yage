@@ -2,6 +2,10 @@ import { Position, type Edge, type Node } from "@xyflow/react";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+interface AddNodeProps {
+  id?: string;
+  position?: { x: number; y: number };
+}
 interface GamebookStore {
   nodes: Node[];
   edges: Edge[];
@@ -9,8 +13,8 @@ interface GamebookStore {
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
   setCurrentFilePath: (path: string | null) => void;
-  addPageNode: () => void;
-  addChoiceNode: () => void;
+  addPageNode: (props: AddNodeProps) => void;
+  addChoiceNode: (props: AddNodeProps) => void;
   reset: () => void;
 }
 const nodeDefaults = {
@@ -50,27 +54,27 @@ const useGamebookStore = create<GamebookStore>()(
           edges: initialEdges,
           currentFilePath: null,
         }),
-      addPageNode: () =>
+      addPageNode: ({ id, position }: AddNodeProps) =>
         set((state) => ({
           nodes: [
             ...state.nodes,
             {
-              id: crypto.randomUUID(),
+              id: id || crypto.randomUUID(),
               type: "page",
-              position: { x: 0, y: 0 },
+              position: position || { x: 0, y: 0 },
               data: { type: "normal", title: "Nuova Pagina", content: "" },
               ...nodeDefaults,
             },
           ],
         })),
-      addChoiceNode: () =>
+      addChoiceNode: ({ id, position }: AddNodeProps) =>
         set((state) => ({
           nodes: [
             ...state.nodes,
             {
-              id: crypto.randomUUID(),
+              id: id || crypto.randomUUID(),
               type: "choice",
-              position: { x: 0, y: 0 },
+              position: position || { x: 0, y: 0 },
               data: { title: "Nuova Scelta", content: "" },
               ...nodeDefaults,
             },

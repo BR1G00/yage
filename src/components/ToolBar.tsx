@@ -1,4 +1,5 @@
 import useGamebookStore from "@/lib/stores/gamebook.store";
+import { useReactFlow } from "@xyflow/react";
 import { GitBranch, Play, StickyNote } from "lucide-react";
 import { PlayStory } from "./PlayStory";
 import { Button } from "./ui/button";
@@ -7,13 +8,34 @@ import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 const ToolBar = () => {
   const addPageNode = useGamebookStore((state) => state.addPageNode);
   const addChoiceNode = useGamebookStore((state) => state.addChoiceNode);
+  const { screenToFlowPosition } = useReactFlow();
 
   const handleNewPage = () => {
-    addPageNode();
+    const viewportCenter = screenToFlowPosition({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    });
+
+    addPageNode({
+      position: {
+        x: viewportCenter.x,
+        y: viewportCenter.y,
+      },
+    });
   };
 
   const handleNewChoice = () => {
-    addChoiceNode();
+    const viewportCenter = screenToFlowPosition({
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    });
+
+    addChoiceNode({
+      position: {
+        x: viewportCenter.x,
+        y: viewportCenter.y,
+      },
+    });
   };
 
   return (
