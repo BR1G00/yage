@@ -3,6 +3,7 @@ import type { Choice, Page } from "@/models";
 import type { Node } from "@xyflow/react";
 import { ArrowLeft } from "lucide-react";
 import { useMemo, useState } from "react";
+import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 
 export const PlayStory = () => {
@@ -70,7 +71,17 @@ export const PlayStory = () => {
 
   return (
     <div className=" flex flex-col gap-4 p-4">
-      <h2 className="text-2xl font-bold">{currentPage?.data.title}</h2>
+      <div className="flex flex-row justify-between items-center gap-2">
+        <h2 className="text-2xl font-bold">{currentPage?.data.title}</h2>
+
+        {currentPage?.data.type === "start" && (
+          <Badge variant="default">Start</Badge>
+        )}
+
+        {currentPage?.data.type === "end" && (
+          <Badge variant="destructive">End</Badge>
+        )}
+      </div>
       <p className="text-sm text-muted-foreground">
         {currentPage?.data.content}
       </p>
