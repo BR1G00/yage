@@ -1,6 +1,6 @@
-import { useEffect, useRef } from "react";
 import type { Choice } from "@/models";
 import { useForm } from "react-hook-form";
+import { useAutoSubmit } from "@/hooks/use-auto-submit";
 import {
   Form,
   FormControl,
@@ -26,13 +26,11 @@ export const ChoiceForm = ({
     },
   });
 
-  const watchedValues = form.watch();
-
-  useEffect(() => {
-    if (form.formState.isDirty) {
-      onSubmit(watchedValues);
-    }
-  }, [watchedValues]);
+  useAutoSubmit({
+    trigger: form.trigger,
+    watch: form.watch,
+    onSubmit: form.handleSubmit(onSubmit),
+  });
 
   return (
     <Form {...form}>
