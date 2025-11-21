@@ -28,15 +28,11 @@ export const useGraphManager = () => {
     [setNodes, setEdges, setCurrentFilePath]
   );
 
-  function stringifyData() {
-    return JSON.stringify({ nodes, edges });
-  }
-
   const handleSaveAs = useCallback(
     async (filePath: string) => {
       const result = await window?.electronAPI?.saveToPath?.(
         filePath,
-        stringifyData()
+        JSON.stringify({ nodes, edges })
       );
       if (result) {
         setCurrentFilePath(filePath);
