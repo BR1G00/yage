@@ -9,6 +9,7 @@ export const useGraphManager = () => {
   const currentFilePath = useGamebookStore((state) => state.currentFilePath);
   const setNodes = useGamebookStore((state) => state.setNodes);
   const setEdges = useGamebookStore((state) => state.setEdges);
+  const reset = useGamebookStore((state) => state.reset);
   const setCurrentFilePath = useGamebookStore(
     (state) => state.setCurrentFilePath
   );
@@ -27,30 +28,23 @@ export const useGraphManager = () => {
     [setNodes, setEdges, setCurrentFilePath]
   );
 
-  function stringifyData() {
-    return JSON.stringify({ nodes, edges });
-  }
+  const handleSaveAs = useCallback(
+    async (filePath: string) => {
+      const result = await window?.electronAPI?.saveToPath?.(
+        filePath,
+        JSON.stringify({ nodes, edges })
+      );
+      if (result) {
+        setCurrentFilePath(filePath);
+        toast.success("File saved");
+      } else {
+        toast.error("Failed to save file");
+      }
+    },
+    [nodes, edges, setCurrentFilePath]
+  );
 
-  const handleSave = useCallback(() => {
-    if (!currentFilePath) {
-      handleSaveAs();
-      return;
-    }
-    window?.electronAPI?.saveToPath?.(currentFilePath, stringifyData());
-  }, [nodes, edges, currentFilePath]);
-
-  const handleSaveAs = useCallback(() => {
-    const blob = new Blob([stringifyData()], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "gamebook.json";
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [nodes, edges]);
-
+  //onOpen
   useEffect(() => {
     const cleanup = window?.electronAPI?.onOpen((data) => {
       try {
@@ -64,36 +58,11 @@ export const useGraphManager = () => {
     return cleanup;
   }, [handleOpen]);
 
+  //onSaveAs
   useEffect(() => {
-    const cleanup = window?.electronAPI?.onSave(() => {
+    const cleanup = window?.electronAPI?.onSaveAs(async (filePath) => {
       try {
-        handleSave();
-      } catch (error) {
-        toast.error("Failed to save file");
-        console.error("Failed to save file", error);
-      }
-    });
-
-    const cleanupSuccess = window?.electronAPI?.onSaveSuccess?.(() => {
-      toast.success("Saved");
-    });
-
-    const cleanupError = window?.electronAPI?.onSaveError?.((error) => {
-      toast.error(`Failed to save file: ${error}`);
-      console.error("Failed to save file", error);
-    });
-
-    return () => {
-      cleanup?.();
-      cleanupSuccess?.();
-      cleanupError?.();
-    };
-  }, [handleSave]);
-
-  useEffect(() => {
-    const cleanup = window?.electronAPI?.onSaveAs(() => {
-      try {
-        handleSaveAs();
+        await handleSaveAs(filePath);
       } catch (error) {
         toast.error("Failed to save file");
         console.error("Failed to save file", error);
@@ -102,4 +71,29 @@ export const useGraphManager = () => {
 
     return cleanup;
   }, [handleSaveAs]);
+
+  //onSave
+  useEffect(() => {
+    const cleanup = window?.electronAPI?.onSave(async () => {
+      try {
+        await handleSaveAs(currentFilePath!);
+      } catch (error) {
+        toast.error("Failed to save file");
+        console.error("Failed to save file", error);
+      }
+    });
+    return cleanup;
+  }, [handleSaveAs, currentFilePath]);
+
+  //onNew
+  useEffect(() => {
+    const cleanup = window?.electronAPI?.onNew(() => {
+      reset();
+    });
+    return cleanup;
+  }, [reset]);
+
+  useEffect(() => {
+    window?.electronAPI?.updateSaveMenu?.(currentFilePath !== null);
+  }, [currentFilePath]);
 };
