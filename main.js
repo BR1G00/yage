@@ -17,20 +17,16 @@ const createWindow = () => {
     },
   });
 
-  // Handler per salvare nel path passato come parametro
   ipcMain.handle("save-to-path", async (_event, filePath, data) => {
     try {
-      // Risolvi il path relativo rispetto alla directory dell'app
       const savePath = path.isAbsolute(filePath)
         ? filePath
         : path.join(__dirname, filePath);
 
-      // Assicurati che la directory esista
       const dir = path.dirname(savePath);
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
-      // Salva il file
       fs.writeFileSync(savePath, data);
       return true;
     } catch (error) {
@@ -123,7 +119,6 @@ const createWindow = () => {
   const menu = Menu.buildFromTemplate(template);
   Menu.setApplicationMenu(menu);
 
-  // Funzione per aggiornare lo stato del menu Save
   function updateSaveMenuEnabled(enabled) {
     const saveMenuItem = menu.getMenuItemById("save");
     if (saveMenuItem) {
@@ -131,18 +126,14 @@ const createWindow = () => {
     }
   }
 
-  // Handler per aggiornare lo stato del menu Save
   ipcMain.on("update-save-menu", (_event, hasFilePath) => {
     updateSaveMenuEnabled(hasFilePath);
   });
 
   if (isDev) {
-    // In development, load from Vite dev server
     win.loadURL("http://localhost:5173");
-    // Open DevTools in development
     win.webContents.openDevTools();
   } else {
-    // In production, load from built files
     win.loadFile(path.join(__dirname, "dist", "index.html"));
   }
 };

@@ -97,7 +97,6 @@ export const useGraphManager = () => {
     return cleanup;
   }, [reset]);
 
-  // Aggiorna lo stato del menu Save quando currentFilePath cambia
   useEffect(() => {
     window?.electronAPI?.updateSaveMenu?.(currentFilePath !== null);
   }, [currentFilePath]);
