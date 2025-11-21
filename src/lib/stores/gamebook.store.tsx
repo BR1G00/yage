@@ -18,6 +18,12 @@ const nodeDefaults = {
   targetPosition: Position.Left,
 };
 
+const pageNodeDefaults = {
+  ...nodeDefaults,
+  width: 320,
+  height: 400,
+};
+
 const initialNodes: Node[] = [
   {
     id: "n1",
@@ -28,7 +34,7 @@ const initialNodes: Node[] = [
       content: "",
     },
     type: "page",
-    ...nodeDefaults,
+    ...pageNodeDefaults,
   },
 ];
 
@@ -59,7 +65,7 @@ const useGamebookStore = create<GamebookStore>()(
               type: "page",
               position: { x: 0, y: 0 },
               data: { type: "normal", title: "Nuova Pagina", content: "" },
-              ...nodeDefaults,
+              ...pageNodeDefaults,
             },
           ],
         })),
