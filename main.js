@@ -114,6 +114,7 @@ const createWindow = () => {
           : []),
       ],
     },
+    {role: "editMenu"},
   ];
 
   const menu = Menu.buildFromTemplate(template);
