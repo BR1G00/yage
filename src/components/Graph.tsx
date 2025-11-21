@@ -18,7 +18,7 @@ import {
   type OnConnectEnd,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import CustomEdge from "./CustomEdge";
 import { ChoiceNode, PageNode } from "./index";
 import ToolBar from "./ToolBar";
@@ -39,7 +39,7 @@ const GraphInner = () => {
   const setEdges = useGamebookStore((state) => state.setEdges);
   const addPageNode = useGamebookStore((state) => state.addPageNode);
   const addChoiceNode = useGamebookStore((state) => state.addChoiceNode);
-  const { screenToFlowPosition } = useReactFlow();
+  const { screenToFlowPosition, getViewport, setCenter } = useReactFlow();
 
   const isValidConnection = (connection: Connection | Edge) => {
     const sourceNode = nodes.find((node) => node.id === connection.source);
@@ -103,6 +103,22 @@ const GraphInner = () => {
     },
     [addPageNode, screenToFlowPosition, addChoiceNode, edges, setEdges]
   );
+
+  const selectedNodeId = useMemo(
+    () => nodes.find((node) => node.selected)?.id,
+    [nodes]
+  );
+
+  useEffect(() => {
+    const selectedNode = nodes.find((node) => node.id === selectedNodeId);
+    if (selectedNode) {
+      const { zoom } = getViewport();
+      setCenter(selectedNode.position.x + 416, selectedNode.position.y + 200, {
+        duration: 800,
+        zoom,
+      });
+    }
+  }, [selectedNodeId]);
 
   return (
     <ReactFlow
