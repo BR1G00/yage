@@ -1,7 +1,14 @@
 import useGamebookStore from "@/lib/stores/gamebook.store";
 import type { Choice, Page } from "@/models";
 import type { Node } from "@xyflow/react";
-import { ArrowLeft, BookOpen, Flag, Home, Play } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  BookOpen,
+  Flag,
+  Home,
+  Play,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -98,18 +105,13 @@ export const PlayStory = () => {
           </h2>
 
           {isStartPage && (
-            <Badge
-              variant="outline"
-              className="text-xs text-green-700 border-green-300"
-            >
-              Start
-            </Badge>
+            <Badge className="bg-green-600 text-white text-xs">Start</Badge>
           )}
 
           {isEndPage && (
             <Badge
               variant="outline"
-              className="text-xs text-orange-600 border-orange-600"
+              className="text-xs bg-orange-600 text-white border-orange-600"
             >
               End
             </Badge>
@@ -122,7 +124,7 @@ export const PlayStory = () => {
               variant="ghost"
               size="sm"
               onClick={handleBack}
-              className="gap-1"
+              className="gap-1 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               Indietro
@@ -134,7 +136,7 @@ export const PlayStory = () => {
               variant="ghost"
               size="sm"
               onClick={handleRestart}
-              className="gap-1"
+              className="gap-1 cursor-pointer"
             >
               <Home className="w-4 h-4" />
               Ricomincia
@@ -156,7 +158,7 @@ export const PlayStory = () => {
           )}
 
           {currentPage?.data.content && (
-            <Card className="p-6 bg-white border-gray-200">
+            <Card className="p-6 bg-white border-1">
               <p className="text-base leading-relaxed text-gray-700 whitespace-pre-wrap">
                 {currentPage.data.content}
               </p>
@@ -167,18 +169,15 @@ export const PlayStory = () => {
             <div className="space-y-3 pt-4">
               <Separator />
               <div className="grid gap-3">
-                {currentChoices.map((choice, index) => (
+                {currentChoices.map((choice) => (
                   <Card
                     key={choice.id}
-                    className="cursor-pointer transition-all duration-200 hover:shadow-sm hover:border-gray-400 active:scale-[0.99] bg-white border-gray-300"
+                    className="group cursor-pointer hover:border-gray-400 bg-white border-1 mt-4"
                     onClick={() => handleChoiceClick(choice.id)}
                   >
-                    <div className="p-4 flex items-start gap-3">
-                      <div className="flex-shrink-0 w-7 h-7 rounded-full bg-gray-300 text-gray-700 flex items-center justify-center font-medium text-sm">
-                        {index + 1}
-                      </div>
+                    <div className="p-4 flex items-center gap-3">
                       <div className="flex-1 space-y-1">
-                        <p className="font-medium text-gray-900">
+                        <p className="font-semibold text-gray-900">
                           {choice.data.title}
                         </p>
                         {choice.data.content && (
@@ -186,6 +185,9 @@ export const PlayStory = () => {
                             {choice.data.content}
                           </p>
                         )}
+                      </div>
+                      <div className="flex-shrink-0 text-gray-400 group-hover:text-gray-900 transition-colors">
+                        <ArrowRight className="w-5 h-5" />
                       </div>
                     </div>
                   </Card>
@@ -196,14 +198,14 @@ export const PlayStory = () => {
 
           {isEndPage && currentChoices.length === 0 && (
             <div className="text-center space-y-4 py-8">
-              <Flag className="w-12 h-12 mx-auto text-orange-600" />
+              <Flag className="w-8 h-8 mx-auto text-orange-600" />
               <p className="text-lg font-medium text-gray-900">
                 Fine della storia
               </p>
               <Button
                 onClick={handleRestart}
                 variant="outline"
-                className="gap-2"
+                className="gap-2 cursor-pointer"
               >
                 <Home className="w-4 h-4" />
                 Ricomincia

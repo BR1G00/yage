@@ -32,7 +32,14 @@ const pageStyles: Record<
   end: {
     headerBg: "bg-orange-50",
     icon: <Flag className="w-4 h-4 text-orange-600" />,
-    badge: <Badge className="bg-orange-600 text-white text-xs">End</Badge>,
+    badge: (
+      <Badge
+        variant="outline"
+        className="text-xs text-orange-600 border-orange-600"
+      >
+        End
+      </Badge>
+    ),
   },
   normal: null,
 };

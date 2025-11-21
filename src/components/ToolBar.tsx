@@ -81,6 +81,7 @@ const ToolBar = () => {
           className="!max-w-[90vw] h-[90vh] p-0 flex flex-col overflow-hidden"
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <PlayStory />
         </DialogContent>

@@ -75,16 +75,14 @@ export const ImageUpload = ({
             alt="Preview"
             className="w-full h-full object-cover"
           />
-          <Button
+          <button
             type="button"
-            variant="destructive"
-            size="icon"
-            className="absolute top-2 right-2 cursor-pointer"
+            className="absolute top-2 right-2 w-6 h-6 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center transition-colors cursor-pointer"
             onClick={handleRemove}
             disabled={disabled}
           >
-            <X className="h-4 w-4" />
-          </Button>
+            <X className="h-3.5 w-3.5" />
+          </button>
         </div>
       ) : (
         <label
