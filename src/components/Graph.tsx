@@ -6,13 +6,16 @@ import {
   MiniMap,
   Panel,
   ReactFlow,
+  ReactFlowProvider,
   addEdge,
   applyEdgeChanges,
   applyNodeChanges,
+  useReactFlow,
   type Connection,
   type Edge,
   type EdgeChange,
   type NodeChange,
+  type OnConnectEnd,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback } from "react";
@@ -29,11 +32,14 @@ const edgeTypes = {
   default: CustomEdge,
 };
 
-export const Graph = () => {
+const GraphInner = () => {
   const nodes = useGamebookStore((state) => state.nodes);
   const edges = useGamebookStore((state) => state.edges);
   const setNodes = useGamebookStore((state) => state.setNodes);
   const setEdges = useGamebookStore((state) => state.setEdges);
+  const addPageNode = useGamebookStore((state) => state.addPageNode);
+  const addChoiceNode = useGamebookStore((state) => state.addChoiceNode);
+  const { screenToFlowPosition } = useReactFlow();
 
   const isValidConnection = (connection: Connection | Edge) => {
     const sourceNode = nodes.find((node) => node.id === connection.source);
@@ -64,6 +70,40 @@ export const Graph = () => {
     [edges, setEdges]
   );
 
+  const onConnectEnd: OnConnectEnd = useCallback(
+    (event, connectionState) => {
+      if (!connectionState.isValid) {
+        const id = crypto.randomUUID();
+        const { clientX, clientY } =
+          "changedTouches" in event ? event.changedTouches[0] : event;
+
+        if (connectionState.fromNode?.type === "page") {
+          addChoiceNode({
+            id,
+            position: screenToFlowPosition({
+              x: clientX,
+              y: clientY,
+            }),
+          });
+        } else {
+          addPageNode({
+            id,
+            position: screenToFlowPosition({
+              x: clientX,
+              y: clientY,
+            }),
+          });
+        }
+
+        setEdges([
+          ...edges,
+          { id, source: connectionState.fromNode?.id || "", target: id },
+        ]);
+      }
+    },
+    [addPageNode, screenToFlowPosition, addChoiceNode, edges, setEdges]
+  );
+
   return (
     <ReactFlow
       deleteKeyCode={null}
@@ -73,6 +113,7 @@ export const Graph = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={onConnect}
+      onConnectEnd={onConnectEnd}
       fitView
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
@@ -85,5 +126,13 @@ export const Graph = () => {
         <ToolBar />
       </Panel>
     </ReactFlow>
+  );
+};
+
+export const Graph = () => {
+  return (
+    <ReactFlowProvider>
+      <GraphInner />
+    </ReactFlowProvider>
   );
 };

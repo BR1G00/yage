@@ -15,8 +15,8 @@ const CustomHandle = ({ connectionCount, ...props }: CustomHandleProps) => {
         backgroundColor: "#eee",
         border: "1px solid #ddd",
         borderRadius: "50%",
-        width: "12px",
-        height: "12px",
+        width: "16px",
+        height: "16px",
       }}
       {...props}
       isConnectable={!connectionCount || connections.length < connectionCount}
