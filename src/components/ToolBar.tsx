@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PlayStory } from "./PlayStory";
 import { Button } from "./ui/button";
-import { Dialog, DialogContent } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 
 const ToolBar = () => {
   const addPageNode = useGamebookStore((state) => state.addPageNode);
@@ -78,12 +78,13 @@ const ToolBar = () => {
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent
-          className="!max-w-[90vw] h-[90vh] p-0 flex flex-col overflow-hidden"
+          className="!max-w-[90vw] h-[80vh] p-0 flex flex-col overflow-hidden"
           onInteractOutside={(e) => e.preventDefault()}
           onEscapeKeyDown={(e) => e.preventDefault()}
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <PlayStory />
+          <DialogTitle className="sr-only">Play Story Mode</DialogTitle>
         </DialogContent>
       </Dialog>
     </div>

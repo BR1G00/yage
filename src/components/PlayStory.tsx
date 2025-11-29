@@ -10,10 +10,8 @@ import {
   Play,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
-import { Separator } from "./ui/separator";
 
 export const PlayStory = () => {
   const nodes = useGamebookStore((state) => state.nodes);
@@ -89,42 +87,35 @@ export const PlayStory = () => {
   const isStartPage = currentPage?.data.type === "start";
 
   return (
-    <div className="flex flex-col h-full w-full overflow-hidden bg-white">
-      <div className="flex-shrink-0 flex items-center justify-between p-4 pr-14 border-b h-16">
+    <div className="flex flex-col h-full w-full overflow-hidden bg-gray-50">
+      {/* Header */}
+      <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 bg-white border-b">
         <div className="flex items-center gap-3">
           {isStartPage ? (
-            <Play className="w-4 h-4 text-green-600" />
+            <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+              <Play className="w-4 h-4 text-emerald-600" />
+            </div>
           ) : isEndPage ? (
-            <Flag className="w-4 h-4 text-orange-600" />
+            <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+              <Flag className="w-4 h-4 text-amber-600" />
+            </div>
           ) : (
-            <BookOpen className="w-4 h-4 text-gray-400" />
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <BookOpen className="w-4 h-4 text-blue-600" />
+            </div>
           )}
-
-          <h2 className="text-base font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-gray-900">
             {currentPage?.data.title}
           </h2>
-
-          {isStartPage && (
-            <Badge className="bg-green-600 text-white text-xs">Start</Badge>
-          )}
-
-          {isEndPage && (
-            <Badge
-              variant="outline"
-              className="text-xs bg-orange-600 text-white border-orange-600"
-            >
-              End
-            </Badge>
-          )}
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex items-center justify-between px-2">
           {pageHistory.length > 1 && (
             <Button
               variant="ghost"
               size="sm"
               onClick={handleBack}
-              className="gap-1 cursor-pointer"
+              className="gap-2 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               Indietro
@@ -136,7 +127,7 @@ export const PlayStory = () => {
               variant="ghost"
               size="sm"
               onClick={handleRestart}
-              className="gap-1 cursor-pointer"
+              className="gap-2 cursor-pointer"
             >
               <Home className="w-4 h-4" />
               Ricomincia
@@ -145,71 +136,93 @@ export const PlayStory = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto bg-gray-50">
-        <div className="p-6 space-y-6">
-          {currentPage?.data.image && (
-            <div className="relative w-full h-80 bg-gray-100 rounded-lg overflow-hidden">
-              <img
-                src={currentPage.data.image}
-                alt={currentPage.data.title || ""}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
-
-          {currentPage?.data.content && (
-            <Card className="p-6 bg-white border-1">
-              <p className="text-base leading-relaxed text-gray-700 whitespace-pre-wrap">
-                {currentPage.data.content}
-              </p>
-            </Card>
-          )}
-
-          {currentChoices.length > 0 && (
-            <div className="space-y-3 pt-4">
-              <Separator />
-              <div className="grid gap-3">
-                {currentChoices.map((choice) => (
-                  <Card
-                    key={choice.id}
-                    className="group cursor-pointer hover:border-gray-400 bg-white border-1 mt-4"
-                    onClick={() => handleChoiceClick(choice.id)}
-                  >
-                    <div className="p-4 flex items-center gap-3">
-                      <div className="flex-1 space-y-1">
-                        <p className="font-semibold text-gray-900">
-                          {choice.data.title}
-                        </p>
-                        {choice.data.content && (
-                          <p className="text-sm text-gray-600">
-                            {choice.data.content}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex-shrink-0 text-gray-400 group-hover:text-gray-900 transition-colors">
-                        <ArrowRight className="w-5 h-5" />
-                      </div>
-                    </div>
-                  </Card>
-                ))}
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div
+          className={`h-full max-w-7xl mx-auto p-8 ${
+            isEndPage && currentChoices.length === 0
+              ? "flex items-center justify-center"
+              : ""
+          }`}
+        >
+          {isEndPage && currentChoices.length === 0 ? (
+            <Card className="p-12 bg-white shadow-lg border-gray-200 text-center max-w-md">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-100 flex items-center justify-center">
+                <Flag className="w-10 h-10 text-amber-600" />
               </div>
-            </div>
-          )}
-
-          {isEndPage && currentChoices.length === 0 && (
-            <div className="text-center space-y-4 py-8">
-              <Flag className="w-8 h-8 mx-auto text-orange-600" />
-              <p className="text-lg font-medium text-gray-900">
+              <p className="text-3xl font-semibold text-gray-900 mb-8">
                 Fine della storia
               </p>
               <Button
                 onClick={handleRestart}
                 variant="outline"
+                size="lg"
                 className="gap-2 cursor-pointer"
               >
                 <Home className="w-4 h-4" />
                 Ricomincia
               </Button>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+              {currentPage?.data.image && (
+                <div className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-lg flex items-center justify-center bg-gray-100 mx-auto">
+                  <img
+                    src={currentPage.data.image}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70"
+                    aria-hidden="true"
+                  />
+                  <img
+                    src={currentPage.data.image}
+                    alt={currentPage.data.title || ""}
+                    className="relative z-10 object-contain max-h-[90%] max-w-[90%] rounded-xl shadow"
+                    style={{ background: "rgba(255,255,255,0.2)" }}
+                  />
+                </div>
+              )}
+
+              <div className="space-y-6">
+                {currentPage?.data.content && (
+                  <Card className="p-6 bg-white border-gray-200">
+                    <p className="text-lg leading-relaxed text-gray-700 whitespace-pre-wrap">
+                      {currentPage.data.content}
+                    </p>
+                  </Card>
+                )}
+
+                {currentChoices.length > 0 && (
+                  <div className="space-y-3">
+                    <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide px-1">
+                      Scegli la tua azione
+                    </h3>
+                    {currentChoices.map((choice, index) => (
+                      <button
+                        key={choice.id}
+                        onClick={() => handleChoiceClick(choice.id)}
+                        className="group w-full text-left bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-400 rounded-xl p-4 transition-all shadow-sm hover:shadow-md cursor-pointer"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-lg flex items-center justify-center shadow-sm">
+                            {index + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">
+                              {choice.data.title}
+                            </p>
+                            {choice.data.content && (
+                              <p className="text-sm text-gray-600 mt-1">
+                                {choice.data.content}
+                              </p>
+                            )}
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

@@ -30,12 +30,12 @@ const pageStyles: Record<
     badge: <Badge className="bg-green-600 text-white text-xs">Start</Badge>,
   },
   end: {
-    headerBg: "bg-orange-50",
-    icon: <Flag className="w-4 h-4 text-orange-600" />,
+    headerBg: "bg-amber-100",
+    icon: <Flag className="w-4 h-4 text-amber-600" />, 
     badge: (
       <Badge
         variant="outline"
-        className="text-xs text-orange-600 border-orange-600"
+        className="text-xs text-amber-600 border-amber-600"
       >
         End
       </Badge>
