@@ -5,28 +5,45 @@ import {
   type Node,
   type NodeProps,
 } from "@xyflow/react";
+import { Flag, Play } from "lucide-react";
 import { useState } from "react";
 import { type Page, type PageType } from "../../models";
 import { ConfirmDeleteDialog } from "../ConfirmDeleteDialog";
 import CustomHandle from "../CustomHandle";
 import ToolTipBar from "../ToolTipBar";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Badge } from "../ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 export type PageNode = Node<Page, "page">;
-const pageHeaders: Record<
+
+const pageStyles: Record<
   PageType,
-  { description: string; color: string } | null
+  {
+    headerBg: string;
+    icon: React.ReactNode;
+    badge: React.ReactNode;
+  } | null
 > = {
-  start: { description: "Start Page", color: "green" },
-  end: { description: "End Page", color: "red" },
+  start: {
+    headerBg: "bg-green-50",
+    icon: <Play className="w-4 h-4 text-green-600" />,
+    badge: <Badge className="bg-green-600 text-white text-xs">Start</Badge>,
+  },
+  end: {
+    headerBg: "bg-amber-100",
+    icon: <Flag className="w-4 h-4 text-amber-600" />, 
+    badge: (
+      <Badge
+        variant="outline"
+        className="text-xs text-amber-600 border-amber-600"
+      >
+        End
+      </Badge>
+    ),
+  },
   normal: null,
 };
+
 export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
   const { deleteElements } = useReactFlow();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -40,6 +57,9 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
     deleteElements({ nodes: [{ id }] });
     setShowDeleteDialog(false);
   };
+
+  const style = pageStyles[data.type];
+  const borderColor = "border-gray-300";
 
   return (
     <>
@@ -65,17 +85,18 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
         onDelete={handleDelete}
       />
       <Card
-        className={`min-w-60 min-h-40 w-full h-full flex flex-col gap-1 ${
-          selected ? "border-blue-500" : "border-gray-300"
-        }`}
+        className={`min-w-60 min-h-40 w-full h-full flex flex-col gap-1 border-2 ${
+          selected ? "border-blue-500 shadow-lg" : borderColor
+        } pt-0`}
       >
-        <CardHeader>
-          <CardTitle>{data.title}</CardTitle>
-          {pageHeaders[data.type]?.description && (
-            <CardDescription style={{ color: pageHeaders[data.type]?.color }}>
-              {pageHeaders[data.type]?.description}
-            </CardDescription>
-          )}
+        <CardHeader className="py-3 rounded-t-xl">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 flex-1">
+              {style?.icon}
+              <CardTitle className="text-base">{data.title}</CardTitle>
+            </div>
+            {style?.badge}
+          </div>
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-3 p-4 overflow-hidden">
           {data.content && (
@@ -87,7 +108,7 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
           )}
 
           {data.image && !imageError && (
-            <div className="relative w-full h-56 bg-gray-100 rounded-sm overflow-hidden  mt-2">
+            <div className="relative w-full h-56 bg-gray-100 rounded-sm overflow-hidden mt-2">
               <img
                 src={data.image}
                 alt={data.title}

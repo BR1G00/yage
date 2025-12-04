@@ -52,12 +52,22 @@ export function NodeSidebar({
       setOpen(true);
 
       if (selectedNode.type === "page") {
-        return <PageForm page={selectedNode.data} onSubmit={handleSubmit} />;
+        return (
+          <PageForm
+            key={selectedNode.id}
+            page={selectedNode.data}
+            onSubmit={handleSubmit}
+          />
+        );
       }
 
       if (selectedNode.type === "choice") {
         return (
-          <ChoiceForm choice={selectedNode.data} onSubmit={handleSubmit} />
+          <ChoiceForm
+            key={selectedNode.id}
+            choice={selectedNode.data}
+            onSubmit={handleSubmit}
+          />
         );
       }
     } else {
@@ -74,32 +84,30 @@ export function NodeSidebar({
   const Icon = config?.icon;
 
   return (
-    <Sidebar className={`border-l `} {...props}>
+    <Sidebar className="border-l bg-white" {...props}>
       {selectedNode && config && Icon && (
-        <SidebarHeader className="border-b p-4 flex flex-row justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className={`${config.color}`}>
-              <Icon className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="font-semibold text-sm">{config.label}</h2>
-              <p className="text-xs text-muted-foreground">
-                {selectedNode.data.title || "Untitled"}
-              </p>
-            </div>
+        <SidebarHeader className="border-b py-4 px-6 flex flex-row justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Icon className={`w-4 h-4 ${config.color}`} />
+            <span className="text-sm text-gray-900 font-medium truncate max-w-[120px]">{selectedNode.data.title || "Untitled"}</span>
+            <span className="text-xs text-gray-500 uppercase tracking-wider ml-2">{config.label}</span>
           </div>
           <Button
             variant="ghost"
             size="icon"
+            className="hover:bg-gray-100 rounded"
             onClick={() => {
               setNodes(nodes.map((node) => ({ ...node, selected: false })));
             }}
+            aria-label="Close sidebar"
           >
-            <XIcon className="w-4 h-4" />
+            <XIcon className="w-4 h-4 text-gray-400" />
           </Button>
         </SidebarHeader>
       )}
-      <SidebarContent className="p-0">{selectedNodeContent}</SidebarContent>
+      <SidebarContent className="p-1 bg-white min-h-0 flex-1 overflow-y-auto">
+        {selectedNodeContent}
+      </SidebarContent>
     </Sidebar>
   );
 }
