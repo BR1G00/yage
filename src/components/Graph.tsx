@@ -18,7 +18,7 @@ import {
   type OnConnectEnd,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import CustomEdge from "./CustomEdge";
 import { ChoiceNode, PageNode } from "./index";
 import ToolBar from "./ToolBar";
@@ -41,8 +41,8 @@ const GraphInner = () => {
   const addChoiceNode = useGamebookStore((state) => state.addChoiceNode);
   const addMode = useGamebookStore((state) => state.addMode);
   const setAddMode = useGamebookStore((state) => state.setAddMode);
-  const { screenToFlowPosition } = useReactFlow();
-
+  const { screenToFlowPosition, getViewport, setCenter } = useReactFlow();
+  const mouseUpRef = useRef(false);
   const isValidConnection = (connection: Connection | Edge) => {
     const sourceNode = nodes.find((node) => node.id === connection.source);
     const targetNode = nodes.find((node) => node.id === connection.target);
@@ -156,6 +156,28 @@ const GraphInner = () => {
     [addMode, addPageNode, addChoiceNode, screenToFlowPosition, resetCursor]
   );
 
+  const selectedNodeId = useMemo(
+    () => nodes.find((node) => node.selected)?.id,
+    [nodes]
+  );
+
+  useEffect(() => {
+    const centerToNode = (nodeId: string) => {
+      const node = nodes.find((node) => node.id === nodeId);
+      if (node) {
+        const { zoom } = getViewport();
+        setCenter(node.position.x + 416, node.position.y + 200, {
+          duration: 800,
+          zoom,
+        });
+      }
+    };
+
+    if (selectedNodeId && mouseUpRef.current) {
+      centerToNode(selectedNodeId);
+    }
+  }, [selectedNodeId, nodes, getViewport, setCenter]);
+
   return (
     <ReactFlow
       deleteKeyCode={null}
@@ -171,6 +193,12 @@ const GraphInner = () => {
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       isValidConnection={isValidConnection}
+      onMouseDownCapture={() => {
+        mouseUpRef.current = false;
+      }}
+      onClick={() => {
+        mouseUpRef.current = true;
+      }}
     >
       <Background />
       <Controls />
