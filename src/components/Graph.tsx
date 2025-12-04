@@ -18,7 +18,7 @@ import {
   type OnConnectEnd,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import CustomEdge from "./CustomEdge";
 import { ChoiceNode, PageNode } from "./index";
 import ToolBar from "./ToolBar";
@@ -39,8 +39,8 @@ const GraphInner = () => {
   const setEdges = useGamebookStore((state) => state.setEdges);
   const addPageNode = useGamebookStore((state) => state.addPageNode);
   const addChoiceNode = useGamebookStore((state) => state.addChoiceNode);
-  const { screenToFlowPosition } = useReactFlow();
-
+  const { screenToFlowPosition, getViewport, setCenter } = useReactFlow();
+  const mouseUpRef = useRef(false);
   const isValidConnection = (connection: Connection | Edge) => {
     const sourceNode = nodes.find((node) => node.id === connection.source);
     const targetNode = nodes.find((node) => node.id === connection.target);
@@ -104,6 +104,28 @@ const GraphInner = () => {
     [addPageNode, screenToFlowPosition, addChoiceNode, edges, setEdges]
   );
 
+  const selectedNodeId = useMemo(
+    () => nodes.find((node) => node.selected)?.id,
+    [nodes]
+  );
+
+  function centerToNode(nodeId: string) {
+    const node = nodes.find((node) => node.id === nodeId);
+    if (node) {
+      const { zoom } = getViewport();
+      setCenter(node.position.x + 416, node.position.y + 200, {
+        duration: 800,
+        zoom,
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (selectedNodeId && mouseUpRef.current) {
+      centerToNode(selectedNodeId);
+    }
+  }, [selectedNodeId, mouseUpRef.current]);
+
   return (
     <ReactFlow
       deleteKeyCode={null}
@@ -118,6 +140,12 @@ const GraphInner = () => {
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       isValidConnection={isValidConnection}
+      onMouseDownCapture={() => {
+        mouseUpRef.current = false;
+      }}
+      onClick={() => {
+        mouseUpRef.current = true;
+      }}
     >
       <Background />
       <Controls />
