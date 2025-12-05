@@ -76,9 +76,7 @@ export function NodeSidebar({
         <div className="flex flex-col items-center justify-center h-full gap-2">
           <SquareDashedMousePointerIcon className="w-10 h-10 text-gray-500" />
           <p className="text-lg font-medium text-gray-500">No node selected</p>
-          <p className="text-sm text-gray-500">
-            Click on a node to edit it or create a new one.
-          </p>
+          <p className="text-sm text-gray-500">Click on a node to edit it.</p>
         </div>
       );
     }
