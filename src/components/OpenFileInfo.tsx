@@ -1,17 +1,21 @@
 import { FileText } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { useCallback, useMemo } from "react";
 
 const OpenFileInfo = ({ filePath }: { filePath: string | null }) => {
-  function getBasename(filePath: string | null) {
+  const getBasename = useCallback((filePath: string | null) => {
     if (!filePath) return "untitled";
     const basename = filePath.split(/[\\/]/).pop() || "untitled";
     if (basename.length > 50) {
       return `${basename.slice(0, 10)}...${basename.slice(-10)}`;
     }
     return basename;
-  }
+  }, []);
 
-  const fileName = getBasename(filePath);
+  const fileName = useMemo(
+    () => getBasename(filePath),
+    [getBasename, filePath]
+  );
 
   return (
     <Tooltip>
