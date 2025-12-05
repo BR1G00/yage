@@ -3,25 +3,28 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
-  useSidebar,
+  SidebarMenu,
+  SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import useGamebookStore from "@/lib/stores/gamebook.store";
 import type { Choice, Page } from "@/models";
-import { FileText, GitBranch, XIcon } from "lucide-react";
+import {
+  FileText,
+  GitBranch,
+  SquareDashedMousePointerIcon,
+} from "lucide-react";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { ChoiceForm } from "./choice/ChoiceForm";
 import type { ChoiceNode } from "./choice/ChoiceNode";
 import { PageForm } from "./page/PageForm";
 import type { PageNode } from "./page/PageNode";
-import { Button } from "./ui/button";
 
 export function NodeSidebar({
   ...props
 }: React.ComponentProps<typeof Sidebar> & {}) {
   const nodes = useGamebookStore((state) => state.nodes);
   const setNodes = useGamebookStore((state) => state.setNodes);
-  const { setOpen } = useSidebar();
   const selectedNode: PageNode | ChoiceNode | undefined = useMemo(
     () =>
       nodes.find((node) => node.selected) as PageNode | ChoiceNode | undefined,
@@ -49,8 +52,6 @@ export function NodeSidebar({
 
   const selectedNodeContent = useMemo(() => {
     if (selectedNode) {
-      setOpen(true);
-
       if (selectedNode.type === "page") {
         return (
           <PageForm
@@ -71,43 +72,62 @@ export function NodeSidebar({
         );
       }
     } else {
-      setOpen(false);
+      return (
+        <div className="flex flex-col items-center justify-center h-full gap-2">
+          <SquareDashedMousePointerIcon className="w-10 h-10 text-gray-500" />
+          <p className="text-lg font-medium text-gray-500">No node selected</p>
+          <p className="text-sm text-gray-500">Click on a node to edit it.</p>
+        </div>
+      );
     }
-  }, [selectedNode, handleSubmit, setOpen]);
+  }, [selectedNode, handleSubmit]);
 
   const nodeTypeConfig = {
-    page: { icon: FileText, label: "Page Node", color: "text-blue-500" },
-    choice: { icon: GitBranch, label: "Choice Node", color: "text-purple-500" },
+    page: {
+      icon: FileText,
+      label: "Page Node",
+      color: "text-blue-500",
+      backgroundColor: "bg-blue-100",
+    },
+    choice: {
+      icon: GitBranch,
+      label: "Choice Node",
+      color: "text-purple-500",
+      backgroundColor: "bg-purple-100",
+    },
   };
 
   const config = selectedNode ? nodeTypeConfig[selectedNode.type] : null;
   const Icon = config?.icon;
 
   return (
-    <Sidebar className="border-l bg-white" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       {selectedNode && config && Icon && (
-        <SidebarHeader className="border-b py-4 px-6 flex flex-row justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Icon className={`w-4 h-4 ${config.color}`} />
-            <span className="text-sm text-gray-900 font-medium truncate max-w-[120px]">{selectedNode.data.title || "Untitled"}</span>
-            <span className="text-xs text-gray-500 uppercase tracking-wider ml-2">{config.label}</span>
-          </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="hover:bg-gray-100 rounded"
-            onClick={() => {
-              setNodes(nodes.map((node) => ({ ...node, selected: false })));
-            }}
-            aria-label="Close sidebar"
-          >
-            <XIcon className="w-4 h-4 text-gray-400" />
-          </Button>
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <div className="flex w-full items-center gap-2 overflow-hidden rounded-md p-2">
+                <div
+                  className={`${config.backgroundColor} flex aspect-square size-8 items-center justify-center rounded-lg`}
+                >
+                  <Icon className={`size-4 ${config.color}`} />
+                </div>
+                <div className="flex flex-col gap-0.5 leading-none">
+                  <span className="font-medium">
+                    {selectedNode.data.title || "Untitled"}
+                  </span>
+                  {selectedNode.type === "page" && (
+                    <span className="text-xs text-gray-500 first-letter:uppercase">
+                      {selectedNode.data.type}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </SidebarMenuItem>
+          </SidebarMenu>
         </SidebarHeader>
       )}
-      <SidebarContent className="p-1 bg-white min-h-0 flex-1 overflow-y-auto">
-        {selectedNodeContent}
-      </SidebarContent>
+      <SidebarContent>{selectedNodeContent}</SidebarContent>
     </Sidebar>
   );
 }

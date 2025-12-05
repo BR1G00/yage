@@ -1,4 +1,6 @@
+import { useAutoSubmit } from "@/hooks/use-auto-submit";
 import type { Page } from "@/models";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -7,12 +9,9 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useForm } from "react-hook-form";
-import { useAutoSubmit } from "@/hooks/use-auto-submit";
-import { Button } from "../ui/button";
 
+import { ImageUpload } from "../ImageUpload";
 import { Input } from "../ui/input";
-import { Textarea } from "../ui/textarea";
 import {
   Select,
   SelectContent,
@@ -20,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { ImageUpload } from "../ImageUpload";
+import { Textarea } from "../ui/textarea";
 
 export const PageForm = ({
   page,
@@ -50,7 +49,7 @@ export const PageForm = ({
         onSubmit={(e) => {
           e.preventDefault();
         }}
-        className="space-y-4 p-6"
+        className="space-y-4 p-4"
       >
         <FormField
           control={form.control}
@@ -59,7 +58,7 @@ export const PageForm = ({
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Title" {...field} />
+                <Input className="bg-white" placeholder="Title" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -74,7 +73,7 @@ export const PageForm = ({
               <FormControl>
                 <Textarea
                   placeholder="Content"
-                  className="min-h-[200px]"
+                  className="min-h-[200px] bg-white"
                   {...field}
                 />
               </FormControl>
@@ -94,7 +93,7 @@ export const PageForm = ({
                   onValueChange={field.onChange}
                   disabled={page.type === "start"}
                 >
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-white">
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
                   <SelectContent>
