@@ -104,6 +104,7 @@ const ToolBar = () => {
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogContent
             className="!max-w-[90vw] h-[80vh] p-0 flex flex-col overflow-hidden"
+            showCloseButton={false}
             onInteractOutside={(e) => e.preventDefault()}
             onEscapeKeyDown={(e) => e.preventDefault()}
             onOpenAutoFocus={(e) => e.preventDefault()}

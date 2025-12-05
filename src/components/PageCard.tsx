@@ -74,12 +74,11 @@ export const PageCard: React.FC<PageCardProps> = ({ page, image, onRestart, chil
       {image && (
         <div
           className={
-            "relative overflow-hidden shadow-lg flex items-center justify-center bg-gray-100 aspect-[2/3] ml-8 rounded-2xl w-1/2"
+            "relative overflow-hidden shadow-lg flex items-center justify-center bg-gray-100 h-[550px] ml-8 rounded-2xl w-1/2"
           }
         >
           <img
             src={image}
-            alt=""
             className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70"
             aria-hidden="true"
           />
