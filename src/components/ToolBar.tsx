@@ -90,14 +90,14 @@ const ToolBar = () => {
           className="mr-2 data-[orientation=vertical]:h-4"
         />
 
-        <Button variant="outline" size="sm" onClick={handleNewPage}>
+        <Button variant="outline" size="sm" onClick={handleNewPage} className="cursor-pointer">
           <StickyNoteIcon /> New Page
         </Button>
-        <Button variant="outline" size="sm" onClick={handleNewChoice}>
+        <Button variant="outline" size="sm" onClick={handleNewChoice} className="cursor-pointer">
           <GitBranchIcon /> New Choice
         </Button>
 
-        <Button variant="outline" size="sm" onClick={handlePlayClick}>
+        <Button variant="outline" size="sm" onClick={handlePlayClick} className="cursor-pointer">
           <PlayIcon /> Play Story
         </Button>
 

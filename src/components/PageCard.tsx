@@ -11,24 +11,27 @@ interface PageCardProps {
   children?: React.ReactNode;
 }
 
-export const PageCard: React.FC<PageCardProps> = ({ page, image, onRestart, children }) => (
+export const PageCard: React.FC<PageCardProps> = ({
+  page,
+  image,
+  onRestart,
+  children,
+}) => (
   <Card
     className={
-      `p-12 bg-white shadow-xl text-center border-2 ${image ? '' : 'max-w-md mx-auto'} ` +
-      (page.type === 'start'
-        ? 'border-emerald-300/40'
-        : page.type === 'end'
-        ? 'border-amber-100/40'
-        : 'border-violet-300/40')
+      `p-12 bg-white shadow-xl text-center border-2 max-h-[70vh] ${
+        image ? "" : "max-w-md mx-auto"
+      } ` +
+      (page.type === "start"
+        ? "border-emerald-300/40"
+        : page.type === "end"
+        ? "border-amber-100/40"
+        : "border-violet-300/40")
     }
   >
-    <div className="flex">
-      <div
-        className={
-          `${image ? "w-1/2" : "w-fit mx-auto"} flex flex-col items-start justify-center`
-        }
-      >
-        <div className="flex items-center gap-3 mb-8 w-full">
+    <div className="flex h-full min-h-0">
+      <div className={image ? "w-1/2 flex flex-col min-h-0" : "w-fit mx-auto"}>
+        <div className="flex items-center gap-3 mb-8 w-full flex-shrink-0">
           {page.type === "start" && (
             <span className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
               <Play className="w-4 h-4 text-emerald-600" />
@@ -43,33 +46,41 @@ export const PageCard: React.FC<PageCardProps> = ({ page, image, onRestart, chil
             {page.title || "Fine"}
           </p>
         </div>
-        {page.content && (
-          <p className="text-lg text-gray-700 mb-8 text-le text-left w-full">
-            {page.content}
-          </p>
-        )}
-        {page.type !== "end" && (
-          <h3 className="text-sm font-medium uppercase tracking-wide px-1 mb-4 w-full text-left text-gray-500">
-            Fai la tua scelta
-          </h3>
-        )}
-        {children}
-        {onRestart && (
-          <Button
-            onClick={onRestart}
-            variant={page.type === "end" ? "outline" : "outline"}
-            size="lg"
-            className={
-              `gap-2 cursor-pointer mt-6 transition-all duration-200 ` +
-              (page.type === "end"
-                ? "border-amber-400 text-amber-700 hover:bg-amber-50 hover:border-amber-500 hover:scale-105 hover:text-amber-700"
-                : "")
-            }
-          >
-            <Home className={page.type === "end" ? "w-4 h-4 text-amber-700 group-hover:text-amber-700" : "w-4 h-4"} />
-            Ricomincia
-          </Button>
-        )}
+        <div className="flex flex-col items-start justify-start overflow-y-auto flex-1 min-h-0">
+          {page.content && (
+            <p className="text-lg text-gray-700 mb-8 text-le text-left w-full">
+              {page.content}
+            </p>
+          )}
+          {page.type !== "end" && (
+            <h3 className="text-sm font-medium uppercase tracking-wide px-1 mb-4 w-full text-left text-gray-500">
+              Fai la tua scelta
+            </h3>
+          )}
+          {children}
+          {onRestart && (
+            <Button
+              onClick={onRestart}
+              variant={page.type === "end" ? "outline" : "outline"}
+              size="lg"
+              className={
+                `gap-2 cursor-pointer mt-6 transition-all duration-200 ` +
+                (page.type === "end"
+                  ? "border-amber-400 text-amber-700 hover:bg-amber-50 hover:border-amber-500 hover:scale-105 hover:text-amber-700"
+                  : "")
+              }
+            >
+              <Home
+                className={
+                  page.type === "end"
+                    ? "w-4 h-4 text-amber-700 group-hover:text-amber-700"
+                    : "w-4 h-4"
+                }
+              />
+              Ricomincia
+            </Button>
+          )}
+        </div>
       </div>
       {image && (
         <div
