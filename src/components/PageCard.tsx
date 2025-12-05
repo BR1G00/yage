@@ -12,15 +12,22 @@ interface PageCardProps {
 }
 
 export const PageCard: React.FC<PageCardProps> = ({ page, image, onRestart, children }) => (
-  <Card className={
-      page.type === "start"
-        ? (image ? "p-12 bg-white shadow-xl border-emerald-300/40 text-center border-2" : "p-12 bg-white shadow-xl border-emerald-300/40 text-center border-2 max-w-md mx-auto")
-        : page.type === "end"
-        ? (image ? "p-12 bg-white shadow-xl border-amber-100/40 text-center border-2" : "p-12 bg-white shadow-xl border-amber-100/40 text-center border-2 max-w-md mx-auto")
-        : (image ? "p-12 bg-white shadow-xl border-violet-300/40 text-center border-2" : "p-12 bg-white shadow-xl border-violet-300/40 text-center border-2 max-w-md mx-auto")
-    }>
+  <Card
+    className={
+      `p-12 bg-white shadow-xl text-center border-2 ${image ? '' : 'max-w-md mx-auto'} ` +
+      (page.type === 'start'
+        ? 'border-emerald-300/40'
+        : page.type === 'end'
+        ? 'border-amber-100/40'
+        : 'border-violet-300/40')
+    }
+  >
     <div className="flex">
-      <div className={image ? "w-1/2 flex flex-col items-start justify-center" : "w-fit flex flex-col items-start justify-center mx-auto"}>
+      <div
+        className={
+          `${image ? "w-1/2" : "w-fit mx-auto"} flex flex-col items-start justify-center`
+        }
+      >
         <div className="flex items-center gap-3 mb-8 w-full">
           {page.type === "start" && (
             <span className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
@@ -43,11 +50,10 @@ export const PageCard: React.FC<PageCardProps> = ({ page, image, onRestart, chil
         )}
         {page.type !== "end" && (
           <h3 className="text-sm font-medium uppercase tracking-wide px-1 mb-4 w-full text-left text-gray-500">
-            Scegli la tua azione
+            Fai la tua scelta
           </h3>
         )}
-        {page.type !== "end" && children}
-        {page.type === "end" && children}
+        {children}
         {onRestart && (
           <Button
             onClick={onRestart}
@@ -66,7 +72,11 @@ export const PageCard: React.FC<PageCardProps> = ({ page, image, onRestart, chil
         )}
       </div>
       {image && (
-        <div className="relative overflow-hidden shadow-lg flex items-center justify-center bg-gray-100 aspect-[2/3] ml-8 rounded-2xl w-1/2">
+        <div
+          className={
+            "relative overflow-hidden shadow-lg flex items-center justify-center bg-gray-100 aspect-[2/3] ml-8 rounded-2xl w-1/2"
+          }
+        >
           <img
             src={image}
             alt=""
