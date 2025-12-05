@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
-import { Card } from "./ui/card";
+import { PageCard } from "./PageCard";
 
 export const PlayStory = () => {
   const nodes = useGamebookStore((state) => state.nodes);
@@ -100,13 +100,11 @@ export const PlayStory = () => {
               <Flag className="w-4 h-4 text-amber-600" />
             </div>
           ) : (
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-              <BookOpen className="w-4 h-4 text-blue-600" />
+            <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center">
+              <BookOpen className="w-4 h-4 text-violet-600" />
             </div>
           )}
-          <h2 className="text-xl font-semibold text-gray-900">
-            {currentPage?.data.title}
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">Play mode</h2>
         </div>
 
         <div className="flex items-center justify-between px-2">
@@ -139,75 +137,57 @@ export const PlayStory = () => {
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         <div
-          className={`h-full max-w-7xl mx-auto p-8 ${
-            isEndPage && currentChoices.length === 0
-              ? "flex items-center justify-center"
-              : ""
-          }`}
+          className="h-full max-w-7xl mx-auto p-8 flex items-center justify-center"
         >
           {isEndPage && currentChoices.length === 0 ? (
-            <Card className="p-12 bg-white shadow-lg border-gray-200 text-center max-w-md">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-amber-100 flex items-center justify-center">
-                <Flag className="w-10 h-10 text-amber-600" />
-              </div>
-              <p className="text-3xl font-semibold text-gray-900 mb-8">
-                Fine della storia
-              </p>
-              <Button
-                onClick={handleRestart}
-                variant="outline"
-                size="lg"
-                className="gap-2 cursor-pointer"
-              >
-                <Home className="w-4 h-4" />
-                Ricomincia
-              </Button>
-            </Card>
+            currentPage && (
+              <PageCard
+                page={currentPage.data}
+                image={currentPage.data.image}
+                onRestart={handleRestart}
+              />
+            )
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
-              {currentPage?.data.image && (
-                <div className="relative w-full h-[400px] rounded-2xl overflow-hidden shadow-lg flex items-center justify-center bg-gray-100 mx-auto">
-                  <img
-                    src={currentPage.data.image}
-                    alt=""
-                    className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70"
-                    aria-hidden="true"
-                  />
-                  <img
-                    src={currentPage.data.image}
-                    alt={currentPage.data.title || ""}
-                    className="relative z-10 object-contain max-h-[90%] max-w-[90%] rounded-xl shadow"
-                    style={{ background: "rgba(255,255,255,0.2)" }}
-                  />
-                </div>
-              )}
-
-              <div className="space-y-6">
-                {currentPage?.data.content && (
-                  <Card className="p-6 bg-white border-gray-200">
-                    <p className="text-lg leading-relaxed text-gray-700 whitespace-pre-wrap">
-                      {currentPage.data.content}
-                    </p>
-                  </Card>
-                )}
-
+            currentPage && (
+              <PageCard
+                page={currentPage.data}
+                image={currentPage.data.image}
+              >
                 {currentChoices.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wide px-1">
-                      Scegli la tua azione
-                    </h3>
+                  <div className="space-y-3 w-full">
                     {currentChoices.map((choice, index) => (
                       <button
                         key={choice.id}
                         onClick={() => handleChoiceClick(choice.id)}
-                        className="group w-full text-left bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-400 rounded-xl p-4 transition-all shadow-sm hover:shadow-md cursor-pointer"
+                        className={
+                          `group w-full text-left bg-white border border-gray-200 rounded-xl p-4 transition-all shadow-sm hover:shadow-md cursor-pointer ` +
+                          (isStartPage
+                            ? "hover:bg-emerald-50 hover:border-emerald-300"
+                            : isEndPage
+                            ? "hover:bg-amber-50 hover:border-amber-200"
+                            : "hover:bg-violet-50 hover:border-violet-300")
+                        }
                       >
                         <div className="flex items-center gap-4">
-                          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-lg flex items-center justify-center shadow-sm">
+                          <div className={
+                            `flex-shrink-0 w-10 h-10 rounded-lg text-white font-bold text-lg flex items-center justify-center shadow-sm ` +
+                            (isStartPage
+                              ? "bg-gradient-to-br from-emerald-400 to-emerald-600"
+                              : isEndPage
+                              ? "bg-gradient-to-br from-amber-400 to-amber-600"
+                              : "bg-gradient-to-br from-violet-500 to-violet-600")
+                          }>
                             {index + 1}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">
+                            <p className={
+                              `font-semibold transition-colors ` +
+                              (isStartPage
+                                ? "text-emerald-700 group-hover:text-emerald-900"
+                                : isEndPage
+                                ? "text-amber-700 group-hover:text-amber-900"
+                                : "text-violet-700 group-hover:text-violet-900")
+                            }>
                               {choice.data.title}
                             </p>
                             {choice.data.content && (
@@ -216,14 +196,21 @@ export const PlayStory = () => {
                               </p>
                             )}
                           </div>
-                          <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all flex-shrink-0" />
+                          <ArrowRight className={
+                            `w-5 h-5 group-hover:translate-x-1 transition-all flex-shrink-0 ` +
+                            (isStartPage
+                              ? "text-emerald-400 group-hover:text-emerald-600"
+                              : isEndPage
+                              ? "text-amber-400 group-hover:text-amber-600"
+                              : "text-violet-400 group-hover:text-violet-600")
+                          } />
                         </div>
                       </button>
                     ))}
                   </div>
                 )}
-              </div>
-            </div>
+              </PageCard>
+            )
           )}
         </div>
       </div>
