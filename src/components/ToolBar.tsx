@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { PlayStory } from "./PlayStory";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+import OpenFileInfo from "./OpenFileInfo";
 
 const ToolBar = () => {
   const setAddMode = useGamebookStore((state) => state.setAddMode);
@@ -60,7 +61,7 @@ const ToolBar = () => {
 
   return (
     <div className="flex bg-gray-100 p-2 gap-2">
-      <div className="text-sm text-gray-500">{currentFilePath}</div>
+      <OpenFileInfo filePath={currentFilePath} />
       <Button variant="outline" size="sm" onClick={handleNewPage}>
         <StickyNoteIcon /> New Page
       </Button>
