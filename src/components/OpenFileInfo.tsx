@@ -4,7 +4,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 const OpenFileInfo = ({ filePath }: { filePath: string | null }) => {
   function getBasename(filePath: string | null) {
     if (!filePath) return "untitled";
-    return filePath.split(/[\\/]/).pop();
+    const basename = filePath.split(/[\\/]/).pop() || "untitled";
+    if (basename.length > 50) {
+      return `${basename.slice(0, 10)}...${basename.slice(-10)}`;
+    }
+    return basename;
   }
 
   const fileName = getBasename(filePath);
