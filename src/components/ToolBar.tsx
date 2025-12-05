@@ -13,6 +13,7 @@ const ToolBar = () => {
   const nodes = useGamebookStore((state) => state.nodes);
   const edges = useGamebookStore((state) => state.edges);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const currentFilePath = useGamebookStore((state) => state.currentFilePath);
 
   const canPlayStory = useMemo(() => {
     const hasStartPage = nodes.some(
@@ -59,6 +60,7 @@ const ToolBar = () => {
 
   return (
     <div className="flex bg-gray-100 p-2 gap-2">
+      <div className="text-sm text-gray-500">{currentFilePath}</div>
       <Button variant="outline" size="sm" onClick={handleNewPage}>
         <StickyNoteIcon /> New Page
       </Button>
