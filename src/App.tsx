@@ -4,8 +4,6 @@ import { Graph } from "./components/Graph";
 import { NodeSidebar } from "./components/NodeSidebar";
 import { SidebarInset, SidebarProvider } from "./components/ui/sidebar";
 import { useGraphManager } from "./hooks/use-graph-manager";
-import { Toaster } from "sonner";
-import useGamebookStore from "./lib/stores/gamebook.store";
 
 function App() {
   useGraphManager();
