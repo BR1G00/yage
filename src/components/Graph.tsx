@@ -204,7 +204,7 @@ const GraphInner = () => {
       <Background />
       <Controls />
       <MiniMap />
-      <Panel position="top-left" className="w-screen !m-0">
+      <Panel position="top-left" className="w-full !m-0">
         <ToolBar />
       </Panel>
     </ReactFlow>

@@ -1,6 +1,15 @@
 import { FileText } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useCallback, useMemo } from "react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+
+const FileName = ({ fileName }: { fileName: string }) => {
+  return (
+    <div className="text-sm text-gray-500 cursor-default w-fit flex items-center gap-1.5">
+      {fileName}
+      <FileText className="w-4 h-4" />
+    </div>
+  );
+};
 
 const OpenFileInfo = ({ filePath }: { filePath: string | null }) => {
   const getBasename = useCallback((filePath: string | null) => {
@@ -17,19 +26,18 @@ const OpenFileInfo = ({ filePath }: { filePath: string | null }) => {
     [getBasename, filePath]
   );
 
+  if (!filePath) return <FileName fileName={fileName} />;
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="text-sm text-gray-500 cursor-default w-fit flex items-center gap-1.5">
-          {fileName}
-          <FileText className="w-4 h-4" />
+        <div>
+          <FileName fileName={fileName} />
         </div>
       </TooltipTrigger>
-      {filePath && (
-        <TooltipContent>
-          <p>{filePath}</p>
-        </TooltipContent>
-      )}
+      <TooltipContent>
+        <p>{filePath}</p>
+      </TooltipContent>
     </Tooltip>
   );
 };
