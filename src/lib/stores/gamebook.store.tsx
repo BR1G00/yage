@@ -10,11 +10,13 @@ interface GamebookStore {
   nodes: Node[];
   edges: Edge[];
   currentFilePath: string | null;
+  addMode: "page" | "choice" | null;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
   setCurrentFilePath: (path: string | null) => void;
   addPageNode: (props: AddNodeProps) => void;
   addChoiceNode: (props: AddNodeProps) => void;
+  setAddMode: (mode: "page" | "choice" | null) => void;
   reset: () => void;
 }
 const nodeDefaults = {
@@ -50,6 +52,7 @@ const useGamebookStore = create<GamebookStore>()(
       nodes: initialNodes,
       edges: initialEdges,
       currentFilePath: null,
+      addMode: null,
       setNodes: (nodes: Node[]) => set({ nodes }),
       setEdges: (edges: Edge[]) => set({ edges }),
       setCurrentFilePath: (path: string | null) =>
@@ -86,6 +89,7 @@ const useGamebookStore = create<GamebookStore>()(
             },
           ],
         })),
+      setAddMode: (mode: "page" | "choice" | null) => set({ addMode: mode }),
     }),
     {
       name: "gamebook-store",

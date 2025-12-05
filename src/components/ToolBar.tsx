@@ -1,6 +1,7 @@
+import gitBranchIcon from "@/assets/git-branch.svg?url";
+import stickyNoteIcon from "@/assets/sticky-note.svg?url";
 import useGamebookStore from "@/lib/stores/gamebook.store";
-import { useReactFlow } from "@xyflow/react";
-import { GitBranch, Play, StickyNote } from "lucide-react";
+import { GitBranchIcon, PlayIcon, StickyNoteIcon } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PlayStory } from "./PlayStory";
@@ -8,9 +9,7 @@ import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
 
 const ToolBar = () => {
-  const addPageNode = useGamebookStore((state) => state.addPageNode);
-  const addChoiceNode = useGamebookStore((state) => state.addChoiceNode);
-  const { screenToFlowPosition } = useReactFlow();
+  const setAddMode = useGamebookStore((state) => state.setAddMode);
   const nodes = useGamebookStore((state) => state.nodes);
   const edges = useGamebookStore((state) => state.edges);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -25,32 +24,27 @@ const ToolBar = () => {
     return hasStartPage && hasConnections;
   }, [nodes, edges]);
 
-  const handleNewPage = () => {
-    const viewportCenter = screenToFlowPosition({
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-    });
+  const setCursorIcon = (svgUrl: string) => {
+    const reactFlowWrapper = document.querySelector(
+      ".react-flow__pane"
+    ) as HTMLElement;
+    if (reactFlowWrapper) {
+      reactFlowWrapper.style.setProperty(
+        "cursor",
+        `url("${svgUrl}") 12 12, default`,
+        "important"
+      );
+    }
+  };
 
-    addPageNode({
-      position: {
-        x: viewportCenter.x,
-        y: viewportCenter.y,
-      },
-    });
+  const handleNewPage = () => {
+    setAddMode("page");
+    setCursorIcon(stickyNoteIcon);
   };
 
   const handleNewChoice = () => {
-    const viewportCenter = screenToFlowPosition({
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2,
-    });
-
-    addChoiceNode({
-      position: {
-        x: viewportCenter.x,
-        y: viewportCenter.y,
-      },
-    });
+    setAddMode("choice");
+    setCursorIcon(gitBranchIcon);
   };
 
   const handlePlayClick = () => {
@@ -66,14 +60,14 @@ const ToolBar = () => {
   return (
     <div className="flex bg-gray-100 p-2 gap-2">
       <Button variant="outline" size="sm" onClick={handleNewPage}>
-        <StickyNote /> New Page
+        <StickyNoteIcon /> New Page
       </Button>
       <Button variant="outline" size="sm" onClick={handleNewChoice}>
-        <GitBranch /> New Choice
+        <GitBranchIcon /> New Choice
       </Button>
 
       <Button variant="outline" size="sm" onClick={handlePlayClick}>
-        <Play /> Play Story
+        <PlayIcon /> Play Story
       </Button>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
