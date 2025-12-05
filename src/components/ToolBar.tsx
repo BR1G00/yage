@@ -60,9 +60,8 @@ const ToolBar = () => {
   };
 
   return (
-    <div className="bg-gray-100 p-1">
-      <OpenFileInfo filePath={currentFilePath} />
-      <div className="flex bg-gray-100  gap-2 pt-1 pb-1">
+    <div className="flex bg-gray-100 justify-between items-center gap-2 p-2">
+      <div className="flex gap-2">
         <Button variant="outline" size="sm" onClick={handleNewPage}>
           <StickyNoteIcon /> New Page
         </Button>
@@ -73,19 +72,21 @@ const ToolBar = () => {
         <Button variant="outline" size="sm" onClick={handlePlayClick}>
           <PlayIcon /> Play Story
         </Button>
-
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent
-            className="!max-w-[90vw] h-[80vh] p-0 flex flex-col overflow-hidden"
-            onInteractOutside={(e) => e.preventDefault()}
-            onEscapeKeyDown={(e) => e.preventDefault()}
-            onOpenAutoFocus={(e) => e.preventDefault()}
-          >
-            <PlayStory />
-            <DialogTitle className="sr-only">Play Story Mode</DialogTitle>
-          </DialogContent>
-        </Dialog>
       </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent
+          className="!max-w-[90vw] h-[80vh] p-0 flex flex-col overflow-hidden"
+          onInteractOutside={(e) => e.preventDefault()}
+          onEscapeKeyDown={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
+          <PlayStory />
+          <DialogTitle className="sr-only">Play Story Mode</DialogTitle>
+        </DialogContent>
+      </Dialog>
+
+      <OpenFileInfo filePath={currentFilePath} />
     </div>
   );
 };
