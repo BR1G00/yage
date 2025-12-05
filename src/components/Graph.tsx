@@ -193,6 +193,7 @@ const GraphInner = () => {
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       isValidConnection={isValidConnection}
+      proOptions={{ hideAttribution: true }}
       onMouseDownCapture={() => {
         mouseUpRef.current = false;
       }}
