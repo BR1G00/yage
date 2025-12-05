@@ -1,0 +1,86 @@
+import { Flag, Home, Play } from "lucide-react";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import type { Page } from "@/models";
+import React from "react";
+
+interface PageCardProps {
+  page: Page;
+  image?: string;
+  onRestart?: () => void;
+  children?: React.ReactNode;
+}
+
+export const PageCard: React.FC<PageCardProps> = ({ page, image, onRestart, children }) => (
+  <Card className={
+      page.type === "start"
+        ? (image ? "p-12 bg-white shadow-xl border-emerald-300/40 text-center border-2" : "p-12 bg-white shadow-xl border-emerald-300/40 text-center border-2 max-w-md mx-auto")
+        : page.type === "end"
+        ? (image ? "p-12 bg-white shadow-xl border-amber-100/40 text-center border-2" : "p-12 bg-white shadow-xl border-amber-100/40 text-center border-2 max-w-md mx-auto")
+        : (image ? "p-12 bg-white shadow-xl border-violet-300/40 text-center border-2" : "p-12 bg-white shadow-xl border-violet-300/40 text-center border-2 max-w-md mx-auto")
+    }>
+    <div className="flex">
+      <div className={image ? "w-1/2 flex flex-col items-start justify-center" : "w-fit flex flex-col items-start justify-center mx-auto"}>
+        <div className="flex items-center gap-3 mb-8 w-full">
+          {page.type === "start" && (
+            <span className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+              <Play className="w-4 h-4 text-emerald-600" />
+            </span>
+          )}
+          {page.type === "end" && (
+            <span className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+              <Flag className="w-4 h-4 text-amber-600" />
+            </span>
+          )}
+          <p className="text-3xl font-semibold text-gray-900 text-left w-full">
+            {page.title || "Fine"}
+          </p>
+        </div>
+        {page.content && (
+          <p className="text-lg text-gray-700 mb-8 text-le text-left w-full">
+            {page.content}
+          </p>
+        )}
+        {page.type !== "end" && (
+          <h3 className="text-sm font-medium uppercase tracking-wide px-1 mb-4 w-full text-left text-gray-500">
+            Scegli la tua azione
+          </h3>
+        )}
+        {page.type !== "end" && children}
+        {page.type === "end" && children}
+        {onRestart && (
+          <Button
+            onClick={onRestart}
+            variant={page.type === "end" ? "outline" : "outline"}
+            size="lg"
+            className={
+              `gap-2 cursor-pointer mt-6 transition-all duration-200 ` +
+              (page.type === "end"
+                ? "border-amber-400 text-amber-700 hover:bg-amber-50 hover:border-amber-500 hover:scale-105 hover:text-amber-700"
+                : "")
+            }
+          >
+            <Home className={page.type === "end" ? "w-4 h-4 text-amber-700 group-hover:text-amber-700" : "w-4 h-4"} />
+            Ricomincia
+          </Button>
+        )}
+      </div>
+      {image && (
+        <div className="relative overflow-hidden shadow-lg flex items-center justify-center bg-gray-100 aspect-[2/3] ml-8 rounded-2xl w-1/2">
+          <img
+            src={image}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover blur-xl scale-110 opacity-70"
+            aria-hidden="true"
+          />
+          <img
+            src={image}
+            alt={page.title || ""}
+            className="relative z-10 object-contain max-h-[90%] max-w-[90%] rounded-xl shadow"
+            style={{ background: "rgba(255,255,255,0.2)" }}
+          />
+        </div>
+      )}
+    </div>
+  </Card>
+);
