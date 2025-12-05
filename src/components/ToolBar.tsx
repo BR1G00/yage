@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { PlayStory } from "./PlayStory";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+import OpenFileInfo from "./OpenFileInfo";
 import { Kbd, KbdGroup } from "./ui/kbd";
 import { Separator } from "./ui/separator";
 import { SidebarTrigger, useSidebar } from "./ui/sidebar";
@@ -19,6 +20,7 @@ const ToolBar = () => {
   const setNodes = useGamebookStore((state) => state.setNodes);
   const edges = useGamebookStore((state) => state.edges);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const currentFilePath = useGamebookStore((state) => state.currentFilePath);
 
   const canPlayStory = useMemo(() => {
     const hasStartPage = nodes.some(
@@ -66,7 +68,8 @@ const ToolBar = () => {
   };
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 bg-white border-b">
+
+    <header className="flex h-16 shrink-0 items-center justify-between gap-2 px-2 bg-white border-b">
       <div className="flex items-center gap-2 px-4">
         <Tooltip delayDuration={1000}>
           <TooltipTrigger asChild>
@@ -110,6 +113,7 @@ const ToolBar = () => {
           </DialogContent>
         </Dialog>
       </div>
+      <OpenFileInfo filePath={currentFilePath} />
     </header>
   );
 };
