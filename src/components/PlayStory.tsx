@@ -8,9 +8,11 @@ import {
   Flag,
   Home,
   Play,
+  XIcon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "./ui/button";
+import { DialogClose } from "./ui/dialog";
 import { PageCard } from "./PageCard";
 
 export const PlayStory = () => {
@@ -107,7 +109,7 @@ export const PlayStory = () => {
           <h2 className="text-xl font-semibold text-gray-900">Play mode</h2>
         </div>
 
-        <div className="flex items-center justify-between px-2">
+        <div className="flex items-center gap-2 px-2">
           {pageHistory.length > 1 && (
             <Button
               variant="ghost"
@@ -131,6 +133,11 @@ export const PlayStory = () => {
               Ricomincia
             </Button>
           )}
+
+          <DialogClose className="ml-2 flex items-center justify-center p-2 rounded hover:bg-gray-100 transition-colors cursor-pointer">
+            <XIcon className="w-5 h-5 text-gray-500" />
+            <span className="sr-only">Chiudi</span>
+          </DialogClose>
         </div>
       </div>
 
