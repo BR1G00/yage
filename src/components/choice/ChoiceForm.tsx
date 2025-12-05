@@ -1,6 +1,6 @@
+import { useAutoSubmit } from "@/hooks/use-auto-submit";
 import type { Choice } from "@/models";
 import { useForm } from "react-hook-form";
-import { useAutoSubmit } from "@/hooks/use-auto-submit";
 import {
   Form,
   FormControl,
@@ -38,7 +38,7 @@ export const ChoiceForm = ({
         onSubmit={(e) => {
           e.preventDefault();
         }}
-        className="space-y-4 p-6"
+        className="space-y-4 p-4"
       >
         <FormField
           control={form.control}
@@ -47,7 +47,7 @@ export const ChoiceForm = ({
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Title" {...field} />
+                <Input className="bg-white" placeholder="Title" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -62,7 +62,7 @@ export const ChoiceForm = ({
               <FormControl>
                 <Textarea
                   placeholder="Content"
-                  className="min-h-[200px]"
+                  className="min-h-[200px] bg-white"
                   {...field}
                 />
               </FormControl>
