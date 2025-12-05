@@ -7,10 +7,13 @@ import { toast } from "sonner";
 import { PlayStory } from "./PlayStory";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogTitle } from "./ui/dialog";
+import { Kbd, KbdGroup } from "./ui/kbd";
 import { Separator } from "./ui/separator";
-import { SidebarTrigger } from "./ui/sidebar";
+import { SidebarTrigger, useSidebar } from "./ui/sidebar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 const ToolBar = () => {
+  const { state } = useSidebar();
   const setAddMode = useGamebookStore((state) => state.setAddMode);
   const nodes = useGamebookStore((state) => state.nodes);
   const setNodes = useGamebookStore((state) => state.setNodes);
@@ -65,7 +68,20 @@ const ToolBar = () => {
   return (
     <header className="flex h-16 shrink-0 items-center gap-2 bg-white border-b">
       <div className="flex items-center gap-2 px-4">
-        <SidebarTrigger className="-ml-1" />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <SidebarTrigger className="-ml-1" />
+          </TooltipTrigger>
+          <TooltipContent>
+            <div className="flex items-center gap-2">
+              <p>{state === "expanded" ? "Close" : "Open"} Node Sidebar</p>
+              <KbdGroup>
+                <Kbd>⌘</Kbd>
+                <Kbd>B</Kbd>
+              </KbdGroup>
+            </div>
+          </TooltipContent>
+        </Tooltip>
         <Separator
           orientation="vertical"
           className="mr-2 data-[orientation=vertical]:h-4"
