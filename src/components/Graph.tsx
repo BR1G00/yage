@@ -113,19 +113,19 @@ const GraphInner = () => {
     if (reactFlowWrapper) {
       reactFlowWrapper.style.removeProperty("cursor");
     }
-  }, []);
+    setAddMode(null);
+  }, [setAddMode]);
 
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && addMode) {
-        setAddMode(null);
         resetCursor();
       }
     };
 
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
-  }, [addMode, setAddMode, resetCursor]);
+  }, [addMode, resetCursor]);
 
   const handlePaneClick = useCallback(
     (event: React.MouseEvent) => {
@@ -194,6 +194,7 @@ const GraphInner = () => {
       edgeTypes={edgeTypes}
       isValidConnection={isValidConnection}
       proOptions={{ hideAttribution: true }}
+      minZoom={0.1}
       onMouseDownCapture={() => {
         mouseUpRef.current = false;
       }}
