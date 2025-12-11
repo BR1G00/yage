@@ -63,13 +63,7 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
 
   return (
     <>
-      <NodeResizer
-        isVisible={selected}
-        minWidth={320}
-        minHeight={400}
-        maxWidth={700}
-        maxHeight={600}
-      />
+      <NodeResizer isVisible={selected} minWidth={320} minHeight={500} />
       <ConfirmDeleteDialog
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
@@ -98,7 +92,7 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
             {style?.badge}
           </div>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col gap-3 p-4 overflow-hidden">
+        <CardContent className="flex-1 flex flex-col gap-2 p-4 overflow-hidden">
           {data.content && (
             <div className="flex-1 overflow-y-auto min-h-32">
               <p className="text-sm text-gray-700 leading-relaxed break-words">
@@ -108,11 +102,11 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
           )}
 
           {data.image && !imageError && (
-            <div className="relative w-full h-56 bg-gray-100 rounded-sm overflow-hidden mt-2">
+            <div className="relative w-full min-w-[200px] min-h-[200px] overflow-hidden ">
               <img
                 src={data.image}
                 alt={data.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 onError={() => setImageError(true)}
               />
             </div>
