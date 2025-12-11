@@ -31,7 +31,7 @@ const pageStyles: Record<
   },
   end: {
     headerBg: "bg-amber-100",
-    icon: <Flag className="w-4 h-4 text-amber-600" />, 
+    icon: <Flag className="w-4 h-4 text-amber-600" />,
     badge: (
       <Badge
         variant="outline"
@@ -100,7 +100,7 @@ export const PageNode = ({ data, selected, id }: NodeProps<PageNode>) => {
         </CardHeader>
         <CardContent className="flex-1 flex flex-col gap-3 p-4 overflow-hidden">
           {data.content && (
-            <div className="flex-1 overflow-y-auto min-h-4">
+            <div className="flex-1 overflow-y-auto min-h-32">
               <p className="text-sm text-gray-700 leading-relaxed break-words">
                 {data.content}
               </p>
