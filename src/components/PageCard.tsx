@@ -46,7 +46,7 @@ export const PageCard: React.FC<PageCardProps> = ({
             {page.title || "Fine"}
           </p>
         </div>
-        <div className="flex flex-col items-start justify-start overflow-y-auto flex-1 min-h-0">
+        <div className="flex flex-col items-start justify-start overflow-y-auto flex-1 min-h-0 pl-1">
           {page.content && (
             <p className="text-lg text-gray-700 mb-8 text-le text-left w-full">
               {page.content}

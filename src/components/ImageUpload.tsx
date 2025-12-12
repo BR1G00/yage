@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Upload, X } from "lucide-react";
-import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import imageCompression from "browser-image-compression";
 
@@ -69,11 +68,11 @@ export const ImageUpload = ({
   return (
     <div className="space-y-2">
       {preview ? (
-        <div className="relative w-full h-48 border rounded-lg overflow-hidden">
+        <div className="relative w-full  border rounded-lg overflow-hidden">
           <img
             src={preview}
             alt="Preview"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
           <button
             type="button"
