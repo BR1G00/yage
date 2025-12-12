@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Upload, X } from "lucide-react";
-import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import imageCompression from "browser-image-compression";
 
